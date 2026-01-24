@@ -19,7 +19,7 @@ export function ProductDetailView({ route, navigation }: RootStackScreenProps<'P
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{product.name}</Text>
-      <Text style={styles.subtitle}>{product.cacao_percent}% cacao · {product.type}</Text>
+      <Text style={styles.subtitle}>{product.cacao_percent}% cacao ï¿½ {product.type}</Text>
 
       <Text style={styles.sectionTitle}>Descripcion</Text>
       <Text style={styles.text}>{product.description}</Text>
