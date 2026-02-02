@@ -1,16 +1,30 @@
-﻿import { apiClient } from './apiClient';
+import { api } from "./api";
 
-export const authService = {
-  async login(email: string, password: string) {
-    return apiClient.post<{ token: string; user: { id: string; name: string; email: string; role: string } }>(
-      '/auth/login',
-      { email, password }
-    );
-  },
-  async register(name: string, email: string, password: string, role: string) {
-    return apiClient.post<{ token: string; user: { id: string; name: string; email: string; role: string } }>(
-      '/auth/register',
-      { name, email, password, role }
-    );
-  },
+export const registerService = async (
+  username: string,
+  email: string,
+  password: string
+) => {
+  const response = await api.post("register/", {
+    username,
+    email,
+    password,
+  });
+  return response.data;
+};
+
+export const loginService = async (
+  username: string,
+  password: string
+) => {
+  const response = await api.post("login/", {
+    username,
+    password,
+  });
+  return response.data;
+};
+
+export const refreshTokenService = async (refresh: string) => {
+  const response = await api.post("token/refresh/", { refresh });
+  return response.data;
 };

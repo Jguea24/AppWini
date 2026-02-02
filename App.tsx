@@ -1,25 +1,69 @@
-﻿import React from 'react';
-import { StatusBar, useColorScheme, View, ActivityIndicator } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { RootNavigator } from './src/navigation/RootNavigator';
-import { useAuthBootstrap } from './src/viewmodels/useAuthViewModel';
+﻿import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { enableScreens } from "react-native-screens";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-  const loading = useAuthBootstrap();
+import { AppNavigator } from "./src/navigation/AppNavigator";
+import { getToken } from "./src/shared/storage/authStorage";
+
+// Mejora rendimiento de navegación nativa
+
+enableScreens(true);
+
+const ONBOARDING_KEY = "onboarding_done";
+
+export default function App() {
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [initialRoute, setInitialRoute] =
+    useState<"Onboarding" | "Auth" | "Home">("Onboarding");
+
+  useEffect(() => {
+    const loadSession = async () => {
+      try {
+        const token = await getToken();
+        const onboardingDone =
+          (await AsyncStorage.getItem(ONBOARDING_KEY)) === "true";
+
+        if (!onboardingDone) {
+          setInitialRoute("Onboarding");
+        } else if (token) {
+          setInitialRoute("Home");
+        } else {
+          setInitialRoute("Auth");
+        }
+      } finally {
+        setCheckingSession(false);
+      }
+    };
+
+    loadSession();
+  }, []);
+
+  if (checkingSession) {
+    return (
+      <SafeAreaProvider>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" />
+        </View>
+      </SafeAreaProvider>
+    );
+  }
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      {loading ? (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator />
-        </View>
-      ) : (
-        <RootNavigator />
-      )}
+      <NavigationContainer>
+        <AppNavigator initialRouteName={initialRoute} />
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
 
-export default App;
+const styles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
