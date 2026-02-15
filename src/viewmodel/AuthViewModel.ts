@@ -2,7 +2,8 @@ import { useState } from "react";
 import { loginService, registerService } from "../services/authService";
 import {
   saveAuthTokens,
-  saveUsername, // 👈 NUEVO
+  saveDisplayName,
+  saveUsername,
 } from "../shared/storage/authStorage";
 
 export function useAuthViewModel() {
@@ -23,15 +24,29 @@ export function useAuthViewModel() {
     return detail || fallback;
   };
 
+  // ✅ REGISTER ACTUALIZADO
   const register = async (
-    username: string,
+    fullName: string,
     email: string,
-    password: string
+    password: string,
+    phone: string,
+    address: string
   ) => {
     try {
       setLoading(true);
       setError(null);
-      await registerService(username, email, password);
+
+      await registerService({
+        full_name: fullName,
+        email,
+        password,
+        phone,
+        address,
+      });
+
+      await saveUsername(email);
+      await saveDisplayName(fullName);
+
       return true;
     } catch (err: any) {
       setError(String(extractError(err, "Error al registrar usuario")));
@@ -48,10 +63,9 @@ export function useAuthViewModel() {
 
       const data = await loginService(username, password);
 
-      // JWT típico en Django REST Framework
       if (data.access) {
         await saveAuthTokens(data.access, data.refresh);
-        await saveUsername(username); // 👈 GUARDAMOS EL USUARIO
+        await saveUsername(username);
         return true;
       }
 

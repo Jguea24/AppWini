@@ -7,7 +7,11 @@ import {
   ScrollView,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { getUsername, removeToken } from "../../shared/storage/authStorage";
+import {
+  getDisplayName,
+  getUsername,
+  removeToken,
+} from "../../shared/storage/authStorage";
 import { homeStyles as styles } from "../styles/home.styles";
 
 /* Acciones principales de Wini App */
@@ -43,10 +47,21 @@ const actions = [
 ];
 
 export function HomeScreen({ navigation }: any) {
-  const [username, setUsername] = useState<string | null>(null);
+  const [welcomeName, setWelcomeName] = useState<string | null>(null);
 
   useEffect(() => {
-    getUsername().then(setUsername);
+    const loadWelcomeName = async () => {
+      const displayName = await getDisplayName();
+      if (displayName) {
+        setWelcomeName(displayName);
+        return;
+      }
+
+      const loginIdentifier = await getUsername();
+      setWelcomeName(loginIdentifier);
+    };
+
+    loadWelcomeName();
   }, []);
 
   const logout = async () => {
@@ -72,7 +87,7 @@ export function HomeScreen({ navigation }: any) {
 
       {/* BIENVENIDA */}
       <Text style={styles.subtitle}>
-        Hola{username ? `, ${username}` : ""}
+        Hola{welcomeName ? `, ${welcomeName}` : ""}
       </Text>
 
       {/* MENSAJE PRINCIPAL */}

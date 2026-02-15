@@ -2,7 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TOKEN_KEY = "auth_token";
 const REFRESH_KEY = "refresh_token";
-const USERNAME_KEY = "auth_username";
+const LOGIN_IDENTIFIER_KEY = "auth_login_identifier";
+const DISPLAY_NAME_KEY = "auth_display_name";
+const LEGACY_USERNAME_KEY = "auth_username";
 
 export const saveAuthTokens = async (access: string, refresh?: string) => {
   await AsyncStorage.setItem(TOKEN_KEY, access);
@@ -12,7 +14,11 @@ export const saveAuthTokens = async (access: string, refresh?: string) => {
 };
 
 export const saveUsername = async (username: string) => {
-  await AsyncStorage.setItem(USERNAME_KEY, username);
+  await AsyncStorage.setItem(LOGIN_IDENTIFIER_KEY, username);
+};
+
+export const saveDisplayName = async (displayName: string) => {
+  await AsyncStorage.setItem(DISPLAY_NAME_KEY, displayName);
 };
 
 export const saveToken = async (token: string) => saveAuthTokens(token);
@@ -22,7 +28,16 @@ export const getToken = async () => {
 };
 
 export const getUsername = async () => {
-  return await AsyncStorage.getItem(USERNAME_KEY);
+  const current = await AsyncStorage.getItem(LOGIN_IDENTIFIER_KEY);
+  if (current) {
+    return current;
+  }
+
+  return await AsyncStorage.getItem(LEGACY_USERNAME_KEY);
+};
+
+export const getDisplayName = async () => {
+  return await AsyncStorage.getItem(DISPLAY_NAME_KEY);
 };
 
 export const getRefreshToken = async () => {
@@ -33,6 +48,8 @@ export const removeToken = async () => {
   await AsyncStorage.multiRemove([
     TOKEN_KEY,
     REFRESH_KEY,
-    USERNAME_KEY,
+    LOGIN_IDENTIFIER_KEY,
+    DISPLAY_NAME_KEY,
+    LEGACY_USERNAME_KEY,
   ]);
 };

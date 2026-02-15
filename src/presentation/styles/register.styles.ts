@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export const registerStyles = StyleSheet.create({
+  keyboardContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: "#283b58",
@@ -36,6 +39,33 @@ export const registerStyles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 14,
     color: "#111827",
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 8,
+    marginBottom: 14,
+    backgroundColor: "#fff",
+  },
+  inputIcon: {
+    marginLeft: 12,
+    marginRight: 8,
+  },
+  inputWithIcon: {
+    flex: 1,
+    paddingRight: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: "#111827",
+  },
+  inputWithoutLeftIcon: {
+    paddingLeft: 14,
+  },
+  passwordToggle: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   button: {
     backgroundColor: "#2563eb",

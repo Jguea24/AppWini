@@ -6,8 +6,11 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAuthViewModel } from "../../viewmodel/AuthViewModel";
+import { getUsername } from "../../shared/storage/authStorage";
 import { loginStyles as styles } from "../styles/login.styles";
 
 export function LoginScreen({ navigation }: any) {
@@ -15,6 +18,26 @@ export function LoginScreen({ navigation }: any) {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const loadStoredUsername = async () => {
+        const storedUsername = await getUsername();
+        if (isActive && storedUsername) {
+          setUsername(storedUsername);
+        }
+      };
+
+      loadStoredUsername();
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
 
   const handleLogin = async () => {
     const success = await login(username.trim(), password);
@@ -25,7 +48,6 @@ export function LoginScreen({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      {/* HEADER */}
       <View style={styles.header}>
         <Image
           source={require("../../shared/assets/logo.png")}
@@ -34,27 +56,46 @@ export function LoginScreen({ navigation }: any) {
 
         <Text style={styles.title}>Wini App</Text>
         <Text style={styles.subtitle}>
-          Inicia sesión y disfruta del chocolate artesanal amazónico
+          Inicia sesion y disfruta del chocolate artesanal amazonico
         </Text>
       </View>
 
-      {/* CARD DE LOGIN */}
       <View style={styles.card}>
-        <TextInput
-          style={styles.input}
-          placeholder="Usuario o correo electrónico"
-          autoCapitalize="none"
-          value={username}
-          onChangeText={setUsername}
-        />
+        <View style={styles.inputWrapper}>
+          <MaterialCommunityIcons
+            name="account-outline"
+            size={20}
+            color="#6b7280"
+            style={styles.inputIcon}
+          />
+          <TextInput
+            style={styles.inputWithIcon}
+            placeholder="Usuario o correo electronico"
+            autoCapitalize="none"
+            value={username}
+            onChangeText={setUsername}
+          />
+        </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={[styles.inputWithIcon, styles.inputWithoutLeftIcon]}
+            placeholder="Contrasena"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.passwordToggle}
+          >
+            <MaterialCommunityIcons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={20}
+              color="#6b7280"
+            />
+          </TouchableOpacity>
+        </View>
 
         {error && <Text style={styles.error}>{error}</Text>}
 
@@ -75,7 +116,7 @@ export function LoginScreen({ navigation }: any) {
 
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
           <Text style={styles.registerText}>
-            ¿No tienes cuenta? Crear una ahora
+            No tienes cuenta? Crear una ahora
           </Text>
         </TouchableOpacity>
       </View>

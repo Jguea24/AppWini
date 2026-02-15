@@ -1,15 +1,13 @@
 import { api } from "./api";
 
-export const registerService = async (
-  username: string,
-  email: string,
-  password: string
-) => {
-  const response = await api.post("register/", {
-    username,
-    email,
-    password,
-  });
+export const registerService = async (payload: {
+  full_name: string;
+  email: string;
+  password: string;
+  phone: string;
+  address: string;
+}) => {
+  const response = await api.post("register/", payload);
   return response.data;
 };
 
