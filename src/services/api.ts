@@ -6,13 +6,13 @@ import { getToken } from "../shared/storage/authStorage";
 // - Emulador Android: http://10.0.2.2:8000
 // - Dispositivo fisico: http://192.168.1.3:8000
 // - iOS simulador / escritorio local: http://localhost:8000
-const DEFAULT_BASE_URL =
+const API_BASE_URL =
   Platform.OS === "android"
     ? "http://10.0.2.2:8000"
     : "http://localhost:8000";
 
 const api = axios.create({
-  baseURL: DEFAULT_BASE_URL,
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -28,5 +28,5 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-export { api };
+export { api, API_BASE_URL };
 export default api;

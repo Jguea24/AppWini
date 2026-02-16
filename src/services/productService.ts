@@ -1,7 +1,9 @@
 import api from "./api";
+import { API_BASE_URL } from "./api";
 import { Product } from "../model/Product";
 
 type ProductApiResponse = Product[] | { results: Product[] };
+type ProductDetailApiResponse = Product | { data: Product } | { result: Product };
 
 const productsByCategoryCache = new Map<number, Product[]>();
 const productsByCategoryPromise = new Map<number, Promise<Product[]>>();
@@ -63,4 +65,29 @@ export const getProductsByCategory = async (
 export const clearProductsByCategoryCache = () => {
   productsByCategoryCache.clear();
   productsByCategoryPromise.clear();
+};
+
+export const getProductDetailService = async (
+  productId: number | string
+): Promise<Product> => {
+  const response = await fetch(`${API_BASE_URL}/products/${productId}/`);
+  const data = (await response.json().catch(() => ({}))) as ProductDetailApiResponse;
+
+  if (!response.ok) {
+    throw new Error(JSON.stringify(data));
+  }
+
+  if ("id" in data) {
+    return data as Product;
+  }
+
+  if ("data" in data && data.data) {
+    return data.data as Product;
+  }
+
+  if ("result" in data && data.result) {
+    return data.result as Product;
+  }
+
+  throw new Error("Respuesta invalida del producto");
 };

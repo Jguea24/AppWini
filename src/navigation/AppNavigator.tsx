@@ -2,6 +2,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { OnboardingNavigator } from "./OnboardingNavigator";
 import { AuthNavigator } from "./AuthNavigator";
 import { HomeScreen } from "../presentation/screens/HomeScreen";
+import { CartScreen } from "../presentation/screens/CartScreen";
+import { NewAddressScreen } from "../presentation/screens/NewAddressScreen";
+import { PaymentMethodScreen } from "../presentation/screens/PaymentMethodScreen";
+import { ProfileScreen } from "../presentation/screens/ProfileScreen";
+import { ProductDetailScreen } from "../presentation/screens/ProductDetailScreen";
 
 /* 👇 Tipado del stack */
 
@@ -9,6 +14,11 @@ export type RootStackParamList = {
   Onboarding: undefined;
   Auth: undefined;
   Home: undefined;
+  Cart: undefined;
+  NewAddress: undefined;
+  PaymentMethod: undefined;
+  Profile: undefined;
+  ProductDetail: { productId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -36,6 +46,41 @@ export function AppNavigator({
       <Stack.Screen
         name="Home"
         component={HomeScreen}
+      />
+      <Stack.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="NewAddress"
+        component={NewAddressScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PaymentMethod"
+        component={PaymentMethodScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ProductDetail"
+        component={ProductDetailScreen}
+        options={{
+          headerShown: false,
+        }}
       />
     </Stack.Navigator>
   );

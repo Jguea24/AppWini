@@ -12,11 +12,11 @@ export const registerService = async (payload: {
 };
 
 export const loginService = async (
-  username: string,
+  identifier: string,
   password: string
 ) => {
   const response = await api.post("login/", {
-    username,
+    identifier,
     password,
   });
   return response.data;

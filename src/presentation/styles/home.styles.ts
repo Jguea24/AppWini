@@ -508,6 +508,11 @@ shopTopRow: {
   marginBottom: 14,
 },
 
+shopTopIconPlaceholder: {
+  width: 40,
+  height: 40,
+},
+
 shopGreeting: {
   fontSize: 13,
   color: "#7f746b",
@@ -615,21 +620,35 @@ shopCategoryTitleActive: {
 },
 
 shopListContent: {
-  paddingBottom: 120,
+  paddingHorizontal: 10,
+  paddingTop: 4,
+  paddingBottom: 130,
 },
 
 shopProductsRow: {
-  paddingHorizontal: 12,
   justifyContent: "space-between",
 },
 
 shopProductCard: {
-  width: "48%",
+  width: "48.4%",
   backgroundColor: "#ffffff",
-  borderRadius: 16,
-  marginBottom: 12,
-  padding: 10,
+  borderRadius: 14,
+  padding: 9,
+  borderWidth: 1,
+  borderColor: "#ede6de",
+  marginBottom: 10,
   elevation: 2,
+},
+
+shopProductSeparator: {
+  height: 10,
+},
+
+shopProductImageWrap: {
+  width: "100%",
+  alignItems: "center",
+  marginTop: 4,
+  marginBottom: 6,
 },
 
 shopDiscountTag: {
@@ -644,22 +663,32 @@ shopDiscountTag: {
 },
 
 shopProductImage: {
-  width: "100%",
-  height: 74,
+  width: 54,
+  height: 54,
   resizeMode: "contain",
-  marginVertical: 8,
+},
+
+shopProductContent: {
+  flex: 1,
 },
 
 shopProductName: {
-  fontSize: 13,
+  fontSize: 10,
   fontWeight: "700",
   color: "#3f2615",
+  minHeight: 30,
 },
 
 shopRatingRow: {
   flexDirection: "row",
-  marginTop: 4,
+  marginTop: 6,
   marginBottom: 6,
+},
+
+shopProductUnit: {
+  color: "#8d7a6b",
+  fontSize: 12,
+  marginBottom: 4,
 },
 
 shopProductFooter: {
@@ -670,7 +699,7 @@ shopProductFooter: {
 
 shopProductPrice: {
   color: "#2c7a57",
-  fontSize: 14,
+  fontSize: 16 / 2,
   fontWeight: "800",
 },
 
@@ -680,13 +709,19 @@ shopProductActions: {
 },
 
 shopIconButton: {
-  width: 28,
-  height: 28,
-  borderRadius: 14,
-  backgroundColor: "#f8f2ec",
+  width: 20,
+  height: 20,
+  borderRadius: 10,
+  backgroundColor: "#f4eee7",
   alignItems: "center",
   justifyContent: "center",
-  marginLeft: 6,
+  marginLeft: 4,
+},
+
+shopSearchHint: {
+  color: "#8d7a6b",
+  fontSize: 12,
+  marginBottom: 8,
 },
 
 shopStatusContainer: {
@@ -713,30 +748,96 @@ shopEmptyText: {
   fontSize: 14,
 },
 
-shopBottomNav: {
+shopBottomNavWrapper: {
   position: "absolute",
-  left: 18,
-  right: 18,
-  bottom: 18,
-  backgroundColor: "#ffffff",
-  borderRadius: 18,
-  height: 62,
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-around",
-  elevation: 5,
+  left: 0,
+  right: 0,
+  bottom: 0,
 },
 
-shopBottomItem: {
-  width: 42,
-  height: 42,
-  borderRadius: 14,
+shopOrderButton: {
+  position: "absolute",
+  right: 10,
+  top: -56,
+  height: 46,
+  minWidth: 118,
+  borderRadius: 12,
+  backgroundColor: "#ffffff",
+  paddingHorizontal: 16,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  elevation: 4,
+},
+
+shopOrderIconWrap: {
+  width: 22,
+  height: 22,
+  marginRight: 8,
   alignItems: "center",
   justifyContent: "center",
 },
 
-shopBottomItemActive: {
-  backgroundColor: "#6f4e37",
+shopOrderButtonIcon: {
+  marginRight: 0,
+},
+
+shopOrderBadge: {
+  position: "absolute",
+  top: -7,
+  right: -9,
+  minWidth: 16,
+  height: 16,
+  borderRadius: 8,
+  backgroundColor: "#ff4d4f",
+  borderWidth: 1,
+  borderColor: "#ffffff",
+  alignItems: "center",
+  justifyContent: "center",
+  paddingHorizontal: 4,
+},
+
+shopOrderBadgeText: {
+  color: "#ffffff",
+  fontSize: 10,
+  fontWeight: "700",
+},
+
+shopOrderButtonText: {
+  color: "#1da1dc",
+  fontSize: 16,
+  fontWeight: "700",
+},
+
+shopBottomNav: {
+  backgroundColor: "#ffffff",
+  borderTopWidth: 1,
+  borderTopColor: "#dfe3e8",
+  height: 66,
+  paddingTop: 6,
+  paddingBottom: 6,
+  flexDirection: "row",
+  justifyContent: "space-around",
+  alignItems: "center",
+},
+
+shopBottomItem: {
+  minWidth: 60,
+  height: 52,
+  alignItems: "center",
+  justifyContent: "center",
+},
+
+shopBottomLabel: {
+  fontSize: 10,
+  color: "#8f8f8f",
+  fontWeight: "500",
+  marginTop: 2,
+},
+
+shopBottomLabelActive: {
+  color: "#1da1dc",
+  fontWeight: "600",
 },
 
   flatListContent: {

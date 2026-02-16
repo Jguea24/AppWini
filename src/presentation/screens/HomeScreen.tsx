@@ -7,19 +7,17 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Alert,
   type ImageSourcePropType,
 } from "react-native";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { api } from "../../services/api";
 import { getBanners } from "../../services/bannerService";
 import { getCategories } from "../../services/categoryService";
 import { getProductsByCategory } from "../../services/productService";
-import {
-  getDisplayName,
-  getUsername,
-  removeToken,
-} from "../../shared/storage/authStorage";
+import { removeToken } from "../../shared/storage/authStorage";
 import { useCartViewModel } from "../../viewmodel/CartViewModel";
 import { Category } from "../../model/category";
 import { Product } from "../../model/Product";
@@ -127,10 +125,14 @@ const mapProductToItem = (product: Product): ChocolateItem => {
 };
 
 export function HomeScreen({ navigation }: any) {
-  const { addToCart, loading: cartLoading, message: cartMessage } =
-    useCartViewModel();
+  const {
+    addToCart,
+    loading: cartLoading,
+    message: cartMessage,
+    cartCount,
+    loadCartCount,
+  } = useCartViewModel();
 
-  const [welcomeName, setWelcomeName] = useState<string | null>(null);
   const [banners, setBanners] = useState<BannerItem[]>([]);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -140,21 +142,6 @@ export function HomeScreen({ navigation }: any) {
   const [productsLoading, setProductsLoading] = useState(true);
   const [productsError, setProductsError] = useState<string | null>(null);
   const [likedProductIds, setLikedProductIds] = useState<number[]>([]);
-
-  useEffect(() => {
-    const loadWelcomeName = async () => {
-      const displayName = await getDisplayName();
-      if (displayName) {
-        setWelcomeName(displayName);
-        return;
-      }
-
-      const loginIdentifier = await getUsername();
-      setWelcomeName(loginIdentifier);
-    };
-
-    loadWelcomeName();
-  }, []);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -206,6 +193,20 @@ export function HomeScreen({ navigation }: any) {
     loadProducts();
   }, [selectedCategory]);
 
+  useEffect(() => {
+    if (!cartMessage) {
+      return;
+    }
+
+    Alert.alert("Carrito", cartMessage);
+  }, [cartMessage]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadCartCount();
+    }, [loadCartCount])
+  );
+
   const logout = async () => {
     await removeToken();
     navigation.replace("Auth");
@@ -229,6 +230,7 @@ export function HomeScreen({ navigation }: any) {
   }, [categoryOptions, selectedCategory]);
 
   const normalizedSearch = search.trim().toLowerCase();
+  const hasSearch = normalizedSearch.length > 0;
   const filteredProducts = useMemo(
     () =>
       products.filter((item) =>
@@ -257,12 +259,9 @@ export function HomeScreen({ navigation }: any) {
         ListHeaderComponent={
           <View style={styles.shopHeader}>
             <View style={styles.shopTopRow}>
-              <View>
-                <Text style={styles.shopGreeting}>
-                  Hola{welcomeName ? `, ${welcomeName}` : ""}
-                </Text>
-                <Text style={styles.shopBrand}>Wini Chocolate Store</Text>
-              </View>
+              <View style={styles.shopTopIconPlaceholder} />
+
+              <Text style={styles.shopBrand}>Wini Store</Text>
 
               <TouchableOpacity
                 style={styles.shopLogoutButton}
@@ -292,64 +291,80 @@ export function HomeScreen({ navigation }: any) {
               />
             </View>
 
-            <BannerCarousel data={banners} />
+            {!hasSearch && <BannerCarousel data={banners} />}
+
+            {!hasSearch && (
+              <>
+                <View style={styles.shopSectionRow}>
+                  <Text style={styles.shopSectionTitle}>Categoria</Text>
+                </View>
+
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.shopCategoryRow}
+                >
+                  {categoryOptions.map((item) => {
+                    const isActive = selectedCategory === item.id;
+                    const categoryImageUrl = resolveImageUrl(
+                      item.image_url || item.image
+                    );
+                    const categoryImage: ImageSourcePropType = categoryImageUrl
+                      ? { uri: categoryImageUrl }
+                      : getCategoryFallbackIcon(item.name);
+
+                    return (
+                      <TouchableOpacity
+                        key={item.id}
+                        style={[
+                          styles.shopCategoryCard,
+                          isActive && styles.shopCategoryCardActive,
+                        ]}
+                        onPress={() => setSelectedCategory(item.id)}
+                        activeOpacity={0.85}
+                      >
+                        <View style={styles.shopCategoryIconWrap}>
+                          <Image
+                            source={categoryImage}
+                            style={styles.shopCategoryIcon}
+                            accessibilityLabel={item.name}
+                          />
+                        </View>
+                        <Text
+                          style={[
+                            styles.shopCategoryTitle,
+                            isActive && styles.shopCategoryTitleActive,
+                          ]}
+                        >
+                          {item.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </>
+            )}
 
             <View style={styles.shopSectionRow}>
-              <Text style={styles.shopSectionTitle}>Category</Text>
+              <Text style={styles.shopSectionTitle}>
+                {hasSearch
+                  ? `Resultados de busqueda (${filteredProducts.length})`
+                  : "Tendencia"}
+              </Text>
+              {!hasSearch && (
+                <TouchableOpacity activeOpacity={0.8}>
+                  <Text style={styles.shopSeeMore}>Ver mas</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.shopCategoryRow}
-            >
-              {categoryOptions.map((item) => {
-                const isActive = selectedCategory === item.id;
-                const categoryImageUrl = resolveImageUrl(
-                  item.image_url || item.image
-                );
-                const categoryImage: ImageSourcePropType = categoryImageUrl
-                  ? { uri: categoryImageUrl }
-                  : getCategoryFallbackIcon(item.name);
+            {hasSearch && (
+              <Text style={styles.shopSearchHint}>
+                {`Mostrando productos relacionados con "${search.trim()}".`}
+              </Text>
+            )}
 
-                return (
-                  <TouchableOpacity
-                    key={item.id}
-                    style={[
-                      styles.shopCategoryCard,
-                      isActive && styles.shopCategoryCardActive,
-                    ]}
-                    onPress={() => setSelectedCategory(item.id)}
-                    activeOpacity={0.85}
-                  >
-                    <View style={styles.shopCategoryIconWrap}>
-                      <Image
-                        source={categoryImage}
-                        style={styles.shopCategoryIcon}
-                        accessibilityLabel={item.name}
-                      />
-                    </View>
-                    <Text
-                      style={[
-                        styles.shopCategoryTitle,
-                        isActive && styles.shopCategoryTitleActive,
-                      ]}
-                    >
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-
-            <View style={styles.shopSectionRow}>
-              <Text style={styles.shopSectionTitle}>Trending</Text>
-              <TouchableOpacity activeOpacity={0.8}>
-                <Text style={styles.shopSeeMore}>See more</Text>
-              </TouchableOpacity>
-            </View>
-
-            {categoriesLoading && (
+            {categoriesLoading && !hasSearch && (
               <Text style={styles.shopStatusText}>Cargando categorias...</Text>
             )}
 
@@ -361,27 +376,28 @@ export function HomeScreen({ navigation }: any) {
         renderItem={({ item }) => {
           const liked = likedProductIds.includes(item.productId);
           return (
-            <View style={styles.shopProductCard}>
+            <TouchableOpacity
+              style={styles.shopProductCard}
+              activeOpacity={0.88}
+              onPress={() =>
+                navigation.navigate("ProductDetail", {
+                  productId: item.productId,
+                })
+              }
+            >
               <Text style={styles.shopDiscountTag}>{item.discountLabel}</Text>
 
-              <Image
-                source={item.image}
-                style={styles.shopProductImage}
-                accessibilityLabel={item.name}
-              />
-
-              <Text style={styles.shopProductName}>{item.name}</Text>
-
-              <View style={styles.shopRatingRow}>
-                {[1, 2, 3, 4, 5].map((starIndex) => (
-                  <MaterialCommunityIcons
-                    key={`${item.id}-${starIndex}`}
-                    name={starIndex <= item.rating ? "star" : "star-outline"}
-                    size={13}
-                    color="#ffb347"
-                  />
-                ))}
+              <View style={styles.shopProductImageWrap}>
+                <Image
+                  source={item.image}
+                  style={styles.shopProductImage}
+                  accessibilityLabel={item.name}
+                />
               </View>
+
+              <Text style={styles.shopProductName} numberOfLines={2}>
+                {item.name}
+              </Text>
 
               <View style={styles.shopProductFooter}>
                 <Text style={styles.shopProductPrice}>{`S/${item.price.toFixed(
@@ -396,7 +412,7 @@ export function HomeScreen({ navigation }: any) {
                   >
                     <MaterialCommunityIcons
                       name={liked ? "heart" : "heart-outline"}
-                      size={17}
+                      size={14}
                       color={liked ? "#d74a4a" : "#8a7d74"}
                     />
                   </TouchableOpacity>
@@ -408,14 +424,14 @@ export function HomeScreen({ navigation }: any) {
                     disabled={cartLoading}
                   >
                     <MaterialCommunityIcons
-                      name="cart-outline"
-                      size={17}
-                      color="#6f4e37"
+                      name="cart-plus"
+                      size={14}
+                      color="#8d7a6b"
                     />
                   </TouchableOpacity>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         }}
         ListEmptyComponent={
@@ -438,33 +454,70 @@ export function HomeScreen({ navigation }: any) {
         }
       />
 
-      <View style={styles.shopBottomNav}>
+      <View style={styles.shopBottomNavWrapper}>
         <TouchableOpacity
-          style={[styles.shopBottomItem, styles.shopBottomItemActive]}
-          activeOpacity={0.8}
+          style={styles.shopOrderButton}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate("Cart")}
+          accessibilityLabel="Ir a mi pedido"
         >
-          <MaterialCommunityIcons name="home" size={21} color="#ffffff" />
+          <View style={styles.shopOrderIconWrap}>
+            <MaterialCommunityIcons
+              name="cart"
+              size={20}
+              color="#1da1dc"
+              style={styles.shopOrderButtonIcon}
+            />
+            {cartCount > 0 && (
+              <View style={styles.shopOrderBadge}>
+                <Text style={styles.shopOrderBadgeText}>
+                  {cartCount > 99 ? "99+" : String(cartCount)}
+                </Text>
+              </View>
+            )}
+          </View>
+          <Text style={styles.shopOrderButtonText}>Mi Pedido</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
-          <MaterialCommunityIcons name="cart-outline" size={20} color="#6f4e37" />
-        </TouchableOpacity>
+        <View style={styles.shopBottomNav}>
+          <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
+            <MaterialCommunityIcons name="home" size={20} color="#1da1dc" />
+            <Text style={[styles.shopBottomLabel, styles.shopBottomLabelActive]}>
+              Inicio
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
-          <MaterialCommunityIcons
-            name="bell-outline"
-            size={20}
-            color="#6f4e37"
-          />
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
+            <MaterialCommunityIcons
+              name="cube-outline"
+              size={19}
+              color="#8f8f8f"
+            />
+            <Text style={styles.shopBottomLabel}>Envios</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
-          <MaterialCommunityIcons
-            name="account-outline"
-            size={20}
-            color="#6f4e37"
-          />
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
+            <MaterialCommunityIcons
+              name="clipboard-text-outline"
+              size={19}
+              color="#8f8f8f"
+            />
+            <Text style={styles.shopBottomLabel}>Pedidos</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.shopBottomItem}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <MaterialCommunityIcons
+              name="account-outline"
+              size={19}
+              color="#8f8f8f"
+            />
+            <Text style={styles.shopBottomLabel}>Perfil</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

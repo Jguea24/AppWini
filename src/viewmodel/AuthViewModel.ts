@@ -56,16 +56,16 @@ export function useAuthViewModel() {
     }
   };
 
-  const login = async (username: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     try {
       setLoading(true);
       setError(null);
 
-      const data = await loginService(username, password);
+      const data = await loginService(identifier, password);
 
       if (data.access) {
         await saveAuthTokens(data.access, data.refresh);
-        await saveUsername(username);
+        await saveUsername(identifier);
         return true;
       }
 
