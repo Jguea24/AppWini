@@ -486,6 +486,259 @@ accessFooter: {
   color: "#94a3b8",
 },
 
+/* ========================= */
+/*       SHOP HOME UI       */
+/* ========================= */
+
+shopScreen: {
+  flex: 1,
+  backgroundColor: "#f4ede6",
+},
+
+shopHeader: {
+  paddingTop: 18,
+  paddingHorizontal: 18,
+  paddingBottom: 8,
+},
+
+shopTopRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 14,
+},
+
+shopGreeting: {
+  fontSize: 13,
+  color: "#7f746b",
+},
+
+shopBrand: {
+  fontSize: 24,
+  fontWeight: "800",
+  color: "#3f2615",
+},
+
+shopLogoutButton: {
+  width: 40,
+  height: 40,
+  borderRadius: 12,
+  backgroundColor: "#ffffff",
+  alignItems: "center",
+  justifyContent: "center",
+  elevation: 2,
+},
+
+shopSearchBar: {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#ffffff",
+  borderRadius: 14,
+  paddingHorizontal: 12,
+  marginBottom: 14,
+  elevation: 2,
+},
+
+shopSearchInput: {
+  flex: 1,
+  color: "#3f2615",
+  fontSize: 14,
+  paddingVertical: 11,
+  marginLeft: 6,
+},
+
+shopSectionRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginTop: 2,
+  marginBottom: 8,
+},
+
+shopSectionTitle: {
+  fontSize: 15,
+  fontWeight: "700",
+  color: "#3f2615",
+},
+
+shopSeeMore: {
+  color: "#a08f83",
+  fontSize: 12,
+  fontWeight: "700",
+},
+
+shopCategoryRow: {
+  paddingBottom: 14,
+  paddingRight: 8,
+},
+
+shopCategoryCard: {
+  width: 92,
+  backgroundColor: "#ffffff",
+  borderRadius: 16,
+  marginRight: 12,
+  paddingVertical: 10,
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "#efe4d8",
+},
+
+shopCategoryCardActive: {
+  borderColor: "#9b6c4e",
+  backgroundColor: "#fdf7f2",
+},
+
+shopCategoryIconWrap: {
+  width: 46,
+  height: 46,
+  borderRadius: 23,
+  backgroundColor: "#f6eee6",
+  alignItems: "center",
+  justifyContent: "center",
+  marginBottom: 6,
+},
+
+shopCategoryIcon: {
+  width: 26,
+  height: 26,
+  resizeMode: "contain",
+},
+
+shopCategoryTitle: {
+  fontSize: 12,
+  fontWeight: "600",
+  color: "#6a5b52",
+},
+
+shopCategoryTitleActive: {
+  color: "#3f2615",
+},
+
+shopListContent: {
+  paddingBottom: 120,
+},
+
+shopProductsRow: {
+  paddingHorizontal: 12,
+  justifyContent: "space-between",
+},
+
+shopProductCard: {
+  width: "48%",
+  backgroundColor: "#ffffff",
+  borderRadius: 16,
+  marginBottom: 12,
+  padding: 10,
+  elevation: 2,
+},
+
+shopDiscountTag: {
+  alignSelf: "flex-start",
+  backgroundColor: "#daf4e8",
+  color: "#269669",
+  fontSize: 10,
+  fontWeight: "800",
+  paddingHorizontal: 7,
+  paddingVertical: 2,
+  borderRadius: 12,
+},
+
+shopProductImage: {
+  width: "100%",
+  height: 74,
+  resizeMode: "contain",
+  marginVertical: 8,
+},
+
+shopProductName: {
+  fontSize: 13,
+  fontWeight: "700",
+  color: "#3f2615",
+},
+
+shopRatingRow: {
+  flexDirection: "row",
+  marginTop: 4,
+  marginBottom: 6,
+},
+
+shopProductFooter: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+},
+
+shopProductPrice: {
+  color: "#2c7a57",
+  fontSize: 14,
+  fontWeight: "800",
+},
+
+shopProductActions: {
+  flexDirection: "row",
+  alignItems: "center",
+},
+
+shopIconButton: {
+  width: 28,
+  height: 28,
+  borderRadius: 14,
+  backgroundColor: "#f8f2ec",
+  alignItems: "center",
+  justifyContent: "center",
+  marginLeft: 6,
+},
+
+shopStatusContainer: {
+  alignItems: "center",
+  justifyContent: "center",
+  paddingTop: 24,
+},
+
+shopStatusText: {
+  marginTop: 8,
+  color: "#6a5b52",
+  fontSize: 13,
+  textAlign: "center",
+},
+
+shopStatusError: {
+  color: "#b42318",
+},
+
+shopEmptyText: {
+  textAlign: "center",
+  color: "#6a5b52",
+  paddingTop: 28,
+  fontSize: 14,
+},
+
+shopBottomNav: {
+  position: "absolute",
+  left: 18,
+  right: 18,
+  bottom: 18,
+  backgroundColor: "#ffffff",
+  borderRadius: 18,
+  height: 62,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-around",
+  elevation: 5,
+},
+
+shopBottomItem: {
+  width: 42,
+  height: 42,
+  borderRadius: 14,
+  alignItems: "center",
+  justifyContent: "center",
+},
+
+shopBottomItemActive: {
+  backgroundColor: "#6f4e37",
+},
+
   flatListContent: {
     marginTop: 16,
     paddingBottom: 20,

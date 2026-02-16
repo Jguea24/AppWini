@@ -74,7 +74,12 @@ export function RegisterScreen({ navigation }: any) {
       style={styles.keyboardContainer}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.header}>
           <Image
             source={require("../../shared/assets/logo.png")}

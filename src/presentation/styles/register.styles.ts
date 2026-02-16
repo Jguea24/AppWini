@@ -4,14 +4,22 @@ export const registerStyles = StyleSheet.create({
   keyboardContainer: {
     flex: 1,
   },
-  container: {
+  scroll: {
     flex: 1,
     backgroundColor: "#283b58",
-    padding: 20,
-    justifyContent: "center",
+  },
+  container: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    justifyContent: "flex-start",
   },
   header: {
-    marginBottom: 30,
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
+    marginTop: 8,
+    marginBottom: 18,
     alignItems: "center",
   },
   title: {
@@ -28,11 +36,14 @@ export const registerStyles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 20,
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
     elevation: 4,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#d1d5db",
+    borderColor: "#1b59b6",
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -97,10 +108,9 @@ export const registerStyles = StyleSheet.create({
   },
 
   logo: {
-  width: 100,
-  height: 100,
-  marginBottom: 10,
-  resizeMode: "contain",
-},
-
+    width: 110,
+    height: 110,
+    marginBottom: 10,
+    resizeMode: "contain",
+  },
 });
