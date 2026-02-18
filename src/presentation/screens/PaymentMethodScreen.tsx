@@ -100,12 +100,16 @@ const getOrderIdentifier = (order: Record<string, unknown>): string | null => {
 };
 
 export function PaymentMethodScreen({ navigation, route }: any) {
+  const routeAddressParam = route?.params?.address as AddressItem | undefined;
+  const routeDeliveryInstructionsParam: string =
+    typeof route?.params?.deliveryInstructions === "string"
+      ? route.params.deliveryInstructions
+      : "";
+
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [addresses, setAddresses] = useState<AddressItem[]>([]);
   const [address, setAddress] = useState<AddressItem | null>(null);
-  const [instructions, setInstructions] = useState(
-    route?.params?.deliveryInstructions ?? ""
-  );
+  const [instructions, setInstructions] = useState<string>(routeDeliveryInstructionsParam);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodId>("cash");
 
   const [loading, setLoading] = useState(false);
@@ -136,16 +140,17 @@ export function PaymentMethodScreen({ navigation, route }: any) {
       setCartItems(normalizedCart);
       setAddresses(addressesData);
 
-      const incomingAddress = route?.params?.address as AddressItem | undefined;
       const defaultAddress =
-        incomingAddress ??
+        routeAddressParam ??
         addressesData.find((item) => item.is_default) ??
         addressesData[0] ??
         null;
       setAddress(defaultAddress);
 
-      if (!instructions && typeof incomingAddress?.delivery_instructions === "string") {
-        setInstructions(incomingAddress.delivery_instructions);
+      if (routeDeliveryInstructionsParam) {
+        setInstructions((current) => current || routeDeliveryInstructionsParam);
+      } else if (typeof routeAddressParam?.delivery_instructions === "string") {
+        setInstructions((current) => current || routeAddressParam.delivery_instructions || "");
       }
     } catch (err) {
       if (err instanceof Error && err.message.trim().length > 0) {
@@ -156,7 +161,7 @@ export function PaymentMethodScreen({ navigation, route }: any) {
     } finally {
       setLoading(false);
     }
-  }, [instructions, route?.params?.address, route?.params?.deliveryInstructions]);
+  }, [routeAddressParam, routeDeliveryInstructionsParam]);
 
   useFocusEffect(
     useCallback(() => {
