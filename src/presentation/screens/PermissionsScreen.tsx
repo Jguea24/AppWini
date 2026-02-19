@@ -1,56 +1,39 @@
-﻿import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { homeStyles as styles } from "../styles/home.styles";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 export function PermissionsScreen({ navigation }: any) {
+  const { isDarkMode } = useThemeMode();
+
   return (
-    <View style={styles.permissionsContainer}>
-      {/* ICONO / ILUSTRACIÃ“N */}
+    <View
+      style={[
+        styles.permissionsContainer,
+        !isDarkMode && { backgroundColor: "#F3EEE8" },
+      ]}
+    >
       <Image
         source={require("../../shared/assets/location_permission.png")}
         style={styles.permissionsIcon}
       />
 
-      {/* TÃTULO */}
-      <Text style={styles.permissionsTitle}>
-        Permisos y uso responsable
-      </Text>
+      <Text style={[styles.permissionsTitle, !isDarkMode && { color: "#3f2615" }]}>Permisos y uso responsable</Text>
 
-      {/* TEXTO INFORMATIVO */}
-      <View style={styles.permissionsCard}>
-        <Text style={styles.permissionsText}>
-          Wini App es una aplicaciÃ³n diseÃ±ada para acercarte al chocolate
-          artesanal amazÃ³nico, permitiÃ©ndote conocer su origen, su proceso
-          de elaboraciÃ³n y realizar pedidos de manera sencilla y segura.
-        </Text>
+      <View style={[styles.permissionsCard, !isDarkMode && { backgroundColor: "#FFFFFF" }]}> 
+        <Text style={[styles.permissionsText, !isDarkMode && { color: "#7f746b" }]}>Wini App te acerca al chocolate artesanal amazonico para conocer su origen y hacer pedidos de forma segura.</Text>
 
-        <Text style={styles.permissionsText}>
-          Para brindarte una mejor experiencia, la aplicaciÃ³n puede solicitar
-          acceso a la cÃ¡mara del dispositivo y a notificaciones. Estos permisos
-          permiten escanear cÃ³digos QR para visualizar la trazabilidad del cacao
-          y enviarte informaciÃ³n sobre pedidos, productos y novedades.
-          La informaciÃ³n se utiliza Ãºnicamente con fines funcionales y no se
-          comparte sin tu consentimiento.
-        </Text>
+        <Text style={[styles.permissionsText, !isDarkMode && { color: "#7f746b" }]}>La aplicacion puede solicitar camara y notificaciones para escanear codigos y avisarte sobre pedidos y novedades.</Text>
       </View>
 
-      {/* BOTÃ“N */}
       <TouchableOpacity
         style={styles.permissionsButton}
         onPress={() => navigation.navigate("Access")}
         activeOpacity={0.85}
       >
-        <Text style={styles.permissionsButtonText}>
-          Aceptar y continuar
-        </Text>
+        <Text style={styles.permissionsButtonText}>Aceptar y continuar</Text>
       </TouchableOpacity>
 
-      {/* FOOTER */}
-      <Text style={styles.permissionsFooter}>
-        Al continuar, aceptas los tÃ©rminos y 
-        condiciones y la polÃ­tica de privacidad
-      </Text>
+      <Text style={[styles.permissionsFooter, !isDarkMode && { color: "#8F8E96" }]}>Al continuar, aceptas los terminos y la politica de privacidad</Text>
     </View>
   );
 }
-
-

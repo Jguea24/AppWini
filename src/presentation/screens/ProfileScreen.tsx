@@ -20,6 +20,7 @@ import {
   MeResponse,
   updateMe,
 } from "../../data/services/profileApi";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 type ProfileForm = {
   full_name: string;
@@ -46,6 +47,7 @@ type MenuRowProps = {
   subtitle?: string;
   onPress?: () => void;
   right?: ReactNode;
+  darkMode?: boolean;
 };
 
 const createInitialProfileForm = (profile?: MeResponse | null): ProfileForm => ({
@@ -90,10 +92,18 @@ const formatRoleLabel = (roleCode: string): string => {
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 };
 
-function MenuRow({ icon, iconBg, title, subtitle, onPress, right }: MenuRowProps) {
+function MenuRow({
+  icon,
+  iconBg,
+  title,
+  subtitle,
+  onPress,
+  right,
+  darkMode = false,
+}: MenuRowProps) {
   return (
     <TouchableOpacity
-      style={styles.menuRow}
+      style={[styles.menuRow, darkMode && styles.menuRowDark]}
       onPress={onPress}
       activeOpacity={onPress ? 0.82 : 1}
       disabled={!onPress}
@@ -103,21 +113,31 @@ function MenuRow({ icon, iconBg, title, subtitle, onPress, right }: MenuRowProps
       </View>
 
       <View style={styles.menuTextWrap}>
-        <Text style={styles.menuTitle}>{title}</Text>
-        {!!subtitle && <Text style={styles.menuSubtitle}>{subtitle}</Text>}
+        <Text style={[styles.menuTitle, darkMode && styles.menuTitleDark]}>{title}</Text>
+        {!!subtitle && (
+          <Text style={[styles.menuSubtitle, darkMode && styles.menuSubtitleDark]}>
+            {subtitle}
+          </Text>
+        )}
       </View>
 
-      {right ?? (onPress ? <MaterialCommunityIcons name="chevron-right" size={26} color="#c8c8ce" /> : null)}
+      {right ??
+        (onPress ? (
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={26}
+            color={darkMode ? "#6e6e76" : "#c8c8ce"}
+          />
+        ) : null)}
     </TouchableOpacity>
   );
 }
 
 export function ProfileScreen({ navigation }: any) {
+  const { isDarkMode, setDarkMode } = useThemeMode();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<MeResponse | null>(null);
-
-  const [darkMode, setDarkMode] = useState(false);
 
   const [profileModalVisible, setProfileModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
@@ -347,10 +367,16 @@ export function ProfileScreen({ navigation }: any) {
     }
   };
 
+  const handleDarkModeChange = (value: boolean) => {
+    setDarkMode(value).catch(() => {
+      Alert.alert("Tema", "No se pudo guardar el modo oscuro");
+    });
+  };
+
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mi Perfil</Text>
+    <View style={[styles.screen, isDarkMode && styles.screenDark]}>
+      <View style={[styles.header, isDarkMode && styles.headerDark]}>
+        <Text style={[styles.headerTitle, isDarkMode && styles.headerTitleDark]}>Mi Perfil</Text>
       </View>
 
       {loading ? (
@@ -359,49 +385,68 @@ export function ProfileScreen({ navigation }: any) {
           <Text style={styles.stateText}>Cargando perfil...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.userCard}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.content,
+            isDarkMode && styles.contentDark,
+          ]}
+        >
+          <View style={[styles.userCard, isDarkMode && styles.userCardDark]}>
             <View style={styles.avatarRing}>
               <View style={styles.avatarInner}>
                 <MaterialCommunityIcons name="account" size={40} color="#9aa5b1" />
               </View>
             </View>
             <View style={styles.userTextWrap}>
-              <Text style={styles.userName}>{displayName}</Text>
-              <Text style={styles.userEmail}>{displayEmail}</Text>
-              <Text style={styles.userRoleText}>{`Rol: ${currentRoleLabel}`}</Text>
-              <Text style={styles.userRolesText}>{`Roles: ${rolesLabel}`}</Text>
+              <Text style={[styles.userName, isDarkMode && styles.userNameDark]}>
+                {displayName}
+              </Text>
+              <Text style={[styles.userEmail, isDarkMode && styles.userEmailDark]}>
+                {displayEmail}
+              </Text>
+              <Text style={[styles.userRoleText, isDarkMode && styles.userRoleTextDark]}>
+                {`Rol: ${currentRoleLabel}`}
+              </Text>
+              <Text style={[styles.userRolesText, isDarkMode && styles.userRolesTextDark]}>
+                {`Roles: ${rolesLabel}`}
+              </Text>
             </View>
           </View>
 
           {!!pendingRoleRequest && (
-            <View style={styles.pendingRoleCard}>
+            <View style={[styles.pendingRoleCard, isDarkMode && styles.pendingRoleCardDark]}>
               <MaterialCommunityIcons name="clock-outline" size={18} color="#7A5230" />
-              <Text style={styles.pendingRoleText}>{pendingRoleSubtitle}</Text>
+              <Text style={[styles.pendingRoleText, isDarkMode && styles.pendingRoleTextDark]}>
+                {pendingRoleSubtitle}
+              </Text>
             </View>
           )}
 
           {!!error && <Text style={styles.errorText}>{error}</Text>}
 
-          <Text style={styles.sectionLabel}>CUENTA</Text>
-          <View style={styles.sectionCard}>
+          <Text style={[styles.sectionLabel, isDarkMode && styles.sectionLabelDark]}>CUENTA</Text>
+          <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
             <MenuRow
               icon="account"
               iconBg="#54C0F1"
               title="Informacion del perfil"
               onPress={openProfileModal}
+              darkMode={isDarkMode}
             />
-            <View style={styles.rowDivider} />
+            <View style={[styles.rowDivider, isDarkMode && styles.rowDividerDark]} />
             <MenuRow
               icon="map-marker"
               iconBg="#34C759"
               title="Mis direcciones"
               onPress={() => navigation.navigate("NewAddress")}
+              darkMode={isDarkMode}
             />
           </View>
 
-          <Text style={styles.sectionLabel}>PREFERENCIAS</Text>
-          <View style={styles.sectionCard}>
+          <Text style={[styles.sectionLabel, isDarkMode && styles.sectionLabelDark]}>
+            PREFERENCIAS
+          </Text>
+          <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
             <MenuRow
               icon="bell"
               iconBg="#FF3B30"
@@ -409,42 +454,50 @@ export function ProfileScreen({ navigation }: any) {
               onPress={() =>
                 Alert.alert("Notificaciones", "Configura notificaciones en tu dispositivo")
               }
+              darkMode={isDarkMode}
             />
-            <View style={styles.rowDivider} />
+            <View style={[styles.rowDivider, isDarkMode && styles.rowDividerDark]} />
             <MenuRow
               icon="earth"
               iconBg="#0A84FF"
               title="Idioma"
               onPress={() => Alert.alert("Idioma", "Espanol")}
+              darkMode={isDarkMode}
             />
-            <View style={styles.rowDivider} />
+            <View style={[styles.rowDivider, isDarkMode && styles.rowDividerDark]} />
             <MenuRow
               icon="weather-sunny"
               iconBg="#FFD60A"
               title="Modo oscuro"
               right={
                 <Switch
-                  value={darkMode}
-                  onValueChange={setDarkMode}
+                  value={isDarkMode}
+                  onValueChange={handleDarkModeChange}
                   trackColor={{ false: "#dddddf", true: "#c6a88e" }}
-                  thumbColor={darkMode ? "#6F4E37" : "#ffffff"}
+                  thumbColor={isDarkMode ? "#6F4E37" : "#ffffff"}
                 />
               }
+              darkMode={isDarkMode}
             />
           </View>
 
-          <Text style={styles.sectionLabel}>RIFAS Y PROMOCIONES</Text>
-          <View style={styles.sectionCard}>
+          <Text style={[styles.sectionLabel, isDarkMode && styles.sectionLabelDark]}>
+            RIFAS Y PROMOCIONES
+          </Text>
+          <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
             <MenuRow
               icon="ticket-confirmation"
               iconBg="#FF9F0A"
               title="Rifas activas"
               onPress={() => Alert.alert("Rifas", "No hay rifas activas por ahora")}
+              darkMode={isDarkMode}
             />
           </View>
 
-          <Text style={styles.sectionLabel}>SOLICITUDES</Text>
-          <View style={styles.sectionCard}>
+          <Text style={[styles.sectionLabel, isDarkMode && styles.sectionLabelDark]}>
+            SOLICITUDES
+          </Text>
+          <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
             <MenuRow
               icon="swap-horizontal"
               iconBg="#AF52DE"
@@ -457,71 +510,108 @@ export function ProfileScreen({ navigation }: any) {
                 }
                 setRoleModalVisible(true);
               }}
+              darkMode={isDarkMode}
             />
           </View>
 
-          <Text style={styles.sectionLabel}>SEGURIDAD</Text>
-          <View style={styles.sectionCard}>
+          <Text style={[styles.sectionLabel, isDarkMode && styles.sectionLabelDark]}>
+            SEGURIDAD
+          </Text>
+          <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
             <MenuRow
               icon="lock"
               iconBg="#5AC8FA"
               title="Cambiar contrasena"
               subtitle="Actualiza tu clave de acceso"
               onPress={() => setPasswordModalVisible(true)}
+              darkMode={isDarkMode}
             />
           </View>
 
-          <Text style={styles.sectionLabel}>SOPORTE</Text>
-          <View style={styles.sectionCard}>
+          <Text style={[styles.sectionLabel, isDarkMode && styles.sectionLabelDark]}>SOPORTE</Text>
+          <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
             <MenuRow
               icon="help-circle"
               iconBg="#5856D6"
               title="Ayuda y soporte"
               onPress={() => Alert.alert("Soporte", "Contacta a soporte de Wini")}
+              darkMode={isDarkMode}
             />
-            <View style={styles.rowDivider} />
+            <View style={[styles.rowDivider, isDarkMode && styles.rowDividerDark]} />
             <MenuRow
               icon="file-document"
               iconBg="#8E8E93"
               title="Terminos y condiciones"
               onPress={() => Alert.alert("Legal", "Proximamente")}
+              darkMode={isDarkMode}
             />
-            <View style={styles.rowDivider} />
+            <View style={[styles.rowDivider, isDarkMode && styles.rowDividerDark]} />
             <MenuRow
               icon="shield-lock"
               iconBg="#0A84FF"
               title="Politica de privacidad"
               onPress={() => Alert.alert("Legal", "Proximamente")}
+              darkMode={isDarkMode}
             />
           </View>
         </ScrollView>
       )}
 
-      <View style={styles.bottomNav}>
+      <View style={[styles.bottomNav, isDarkMode && styles.bottomNavDark]}>
         <TouchableOpacity style={styles.bottomItem} onPress={() => navigation.navigate("Home")}>
-          <MaterialCommunityIcons name="home-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Inicio</Text>
+          <MaterialCommunityIcons
+            name="home-outline"
+            size={28}
+            color={isDarkMode ? "#7f7f86" : "#919191"}
+          />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>
+            Inicio
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.bottomItem}
           onPress={() => navigation.navigate("Shipments")}
         >
-          <MaterialCommunityIcons name="cube-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Envios</Text>
+          <MaterialCommunityIcons
+            name="cube-outline"
+            size={28}
+            color={isDarkMode ? "#7f7f86" : "#919191"}
+          />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>
+            Envios
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.bottomItem}
           onPress={() => navigation.navigate("Orders")}
         >
-          <MaterialCommunityIcons name="shopping-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Pedidos</Text>
+          <MaterialCommunityIcons
+            name="shopping-outline"
+            size={28}
+            color={isDarkMode ? "#7f7f86" : "#919191"}
+          />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>
+            Pedidos
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.bottomItem} activeOpacity={0.85}>
-          <MaterialCommunityIcons name="account" size={28} color="#25B5E7" />
-          <Text style={[styles.bottomLabel, styles.bottomLabelActive]}>Perfil</Text>
+          <MaterialCommunityIcons
+            name="account"
+            size={28}
+            color={isDarkMode ? "#C19A6B" : "#25B5E7"}
+          />
+          <Text
+            style={[
+              styles.bottomLabel,
+              styles.bottomLabelActive,
+              isDarkMode && styles.bottomLabelActiveDark,
+            ]}
+          >
+            Perfil
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -735,6 +825,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ECEBF0",
   },
+  screenDark: {
+    backgroundColor: "#121214",
+  },
   header: {
     height: 96,
     alignItems: "center",
@@ -742,10 +835,16 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     backgroundColor: "#ECEBF0",
   },
+  headerDark: {
+    backgroundColor: "#121214",
+  },
   headerTitle: {
     fontSize: 22,
     fontWeight: "800",
     color: "#141414",
+  },
+  headerTitleDark: {
+    color: "#F2F2F4",
   },
   centerState: {
     flex: 1,
@@ -761,6 +860,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
+  contentDark: {
+    backgroundColor: "#121214",
+  },
   userCard: {
     backgroundColor: "#ffffff",
     borderRadius: 22,
@@ -768,6 +870,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
+  },
+  userCardDark: {
+    backgroundColor: "#1A1A1E",
   },
   avatarRing: {
     width: 84,
@@ -797,10 +902,16 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111111",
   },
+  userNameDark: {
+    color: "#F2F2F4",
+  },
   userEmail: {
     marginTop: 4,
     fontSize: 16 / 1.1,
     color: "#8a8a91",
+  },
+  userEmailDark: {
+    color: "#B6B6BC",
   },
   userRoleText: {
     marginTop: 6,
@@ -808,10 +919,16 @@ const styles = StyleSheet.create({
     color: "#6F4E37",
     fontWeight: "700",
   },
+  userRoleTextDark: {
+    color: "#D7B48A",
+  },
   userRolesText: {
     marginTop: 2,
     fontSize: 12,
     color: "#8a8a90",
+  },
+  userRolesTextDark: {
+    color: "#AAAAAF",
   },
   pendingRoleCard: {
     marginTop: -8,
@@ -825,12 +942,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  pendingRoleCardDark: {
+    borderColor: "#46382A",
+    backgroundColor: "#2A211A",
+  },
   pendingRoleText: {
     marginLeft: 8,
     color: "#7A5230",
     fontSize: 13,
     fontWeight: "600",
     flex: 1,
+  },
+  pendingRoleTextDark: {
+    color: "#E1C29F",
   },
   errorText: {
     marginBottom: 12,
@@ -844,11 +968,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 2,
   },
+  sectionLabelDark: {
+    color: "#A0A0A8",
+  },
   sectionCard: {
     backgroundColor: "#ffffff",
     borderRadius: 18,
     marginBottom: 18,
     overflow: "hidden",
+  },
+  sectionCardDark: {
+    backgroundColor: "#1A1A1E",
   },
   menuRow: {
     minHeight: 70,
@@ -856,6 +986,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 14,
     paddingVertical: 10,
+  },
+  menuRowDark: {
+    backgroundColor: "#1A1A1E",
   },
   menuIconWrap: {
     width: 44,
@@ -873,15 +1006,24 @@ const styles = StyleSheet.create({
     fontSize: 18 / 1.1,
     fontWeight: "700",
   },
+  menuTitleDark: {
+    color: "#F2F2F4",
+  },
   menuSubtitle: {
     marginTop: 2,
     color: "#8a8a90",
     fontSize: 15 / 1.1,
   },
+  menuSubtitleDark: {
+    color: "#A0A0A8",
+  },
   rowDivider: {
     marginLeft: 70,
     borderBottomWidth: 1,
     borderBottomColor: "#ececf1",
+  },
+  rowDividerDark: {
+    borderBottomColor: "#2A2A30",
   },
   bottomNav: {
     height: 80,
@@ -892,6 +1034,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     paddingBottom: 4,
+  },
+  bottomNavDark: {
+    borderTopColor: "#2A2A30",
+    backgroundColor: "#1A1A1E",
   },
   bottomItem: {
     minWidth: 64,
@@ -904,9 +1050,15 @@ const styles = StyleSheet.create({
     fontSize: 16 / 2,
     fontWeight: "500",
   },
+  bottomLabelDark: {
+    color: "#A0A0A8",
+  },
   bottomLabelActive: {
     color: "#25B5E7",
     fontWeight: "700",
+  },
+  bottomLabelActiveDark: {
+    color: "#D7B48A",
   },
   modalOverlay: {
     flex: 1,

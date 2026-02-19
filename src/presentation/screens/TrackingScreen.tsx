@@ -14,6 +14,7 @@ import {
   type OrderTrackingResponse,
   type TrackingPoint,
 } from "../../data/services/trackingService";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 const toNullableNumber = (value: unknown): number | null => {
   if (value === null || value === undefined) {
@@ -80,6 +81,7 @@ const mapPoint = (point: TrackingPoint): { latitude: number; longitude: number }
 };
 
 export function TrackingScreen({ navigation, route }: any) {
+  const { isDarkMode } = useThemeMode();
   const orderId = Number(route?.params?.orderId);
   const [tracking, setTracking] = useState<OrderTrackingResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -154,6 +156,7 @@ export function TrackingScreen({ navigation, route }: any) {
     normalizedStatus.includes("assign");
   const shouldShowMap = Boolean(currentLocation) && hasDriver && !isPendingAssignment;
   const mapLocation = currentLocation ?? { latitude: 0, longitude: 0 };
+  const primaryIcon = isDarkMode ? "#D7B48A" : "#6F4E37";
 
   const autoAssignDriver = useCallback(async () => {
     if (!Number.isFinite(orderId)) {
@@ -199,36 +202,44 @@ export function TrackingScreen({ navigation, route }: any) {
   ]);
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
+    <View style={[styles.screen, isDarkMode && styles.screenDark]}>
+      <View style={[styles.header, isDarkMode && styles.headerDark]}>
         <TouchableOpacity
           style={styles.headerIconButton}
           onPress={() => navigation.goBack()}
           accessibilityLabel="Volver"
         >
-          <MaterialCommunityIcons name="chevron-left" size={34} color="#6F4E37" />
+          <MaterialCommunityIcons name="chevron-left" size={34} color={primaryIcon} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>{`Tracking #${Number.isFinite(orderId) ? orderId : "-"}`}</Text>
+        <Text style={[styles.headerTitle, isDarkMode && styles.headerTitleDark]}>
+          {`Tracking #${Number.isFinite(orderId) ? orderId : "-"}`}
+        </Text>
 
         <TouchableOpacity
           style={styles.headerIconButton}
           onPress={loadTracking}
           accessibilityLabel="Actualizar tracking"
         >
-          <MaterialCommunityIcons name="refresh" size={22} color="#6F4E37" />
+          <MaterialCommunityIcons name="refresh" size={22} color={primaryIcon} />
         </TouchableOpacity>
       </View>
 
       {loading && !shouldShowMap ? (
         <View style={styles.centerState}>
-          <ActivityIndicator color="#6F4E37" />
-          <Text style={styles.stateText}>Cargando mapa...</Text>
+          <ActivityIndicator color={primaryIcon} />
+          <Text style={[styles.stateText, isDarkMode && styles.stateTextDark]}>
+            Cargando mapa...
+          </Text>
         </View>
       ) : !shouldShowMap ? (
         <View style={styles.centerState}>
-          <MaterialCommunityIcons name="map-marker-off-outline" size={34} color="#8D7A6B" />
-          <Text style={styles.stateText}>
+          <MaterialCommunityIcons
+            name="map-marker-off-outline"
+            size={34}
+            color={isDarkMode ? "#A0A0A8" : "#8D7A6B"}
+          />
+          <Text style={[styles.stateText, isDarkMode && styles.stateTextDark]}>
             {assigningDriver
               ? "Asignando repartidor..."
               : isPendingAssignment
@@ -278,12 +289,14 @@ export function TrackingScreen({ navigation, route }: any) {
             </Marker>
           </MapView>
 
-          <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>Estado del envio</Text>
-            <Text style={styles.infoStatus}>
+          <View style={[styles.infoCard, isDarkMode && styles.infoCardDark]}>
+            <Text style={[styles.infoTitle, isDarkMode && styles.infoTitleDark]}>
+              Estado del envio
+            </Text>
+            <Text style={[styles.infoStatus, isDarkMode && styles.infoStatusDark]}>
               {toStatusLabel(shipment?.status)}
             </Text>
-            <Text style={styles.infoMeta}>
+            <Text style={[styles.infoMeta, isDarkMode && styles.infoMetaDark]}>
               {toNullableNumber(shipment?.eta_minutes) !== null
                 ? `ETA aprox: ${toNullableNumber(shipment?.eta_minutes)} min`
                 : "ETA: por confirmar"}
@@ -301,6 +314,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F3EEE8",
   },
+  screenDark: {
+    backgroundColor: "#121214",
+  },
   header: {
     height: 92,
     backgroundColor: "#F3EEE8",
@@ -309,6 +325,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 14,
     paddingBottom: 10,
+  },
+  headerDark: {
+    backgroundColor: "#121214",
   },
   headerIconButton: {
     width: 44,
@@ -319,6 +338,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "800",
     color: "#111111",
+  },
+  headerTitleDark: {
+    color: "#F2F2F4",
   },
   map: {
     flex: 1,
@@ -333,10 +355,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
+  infoCardDark: {
+    borderColor: "#2E2E33",
+    backgroundColor: "#1A1A1E",
+  },
   infoTitle: {
     color: "#8D7A6B",
     fontSize: 12,
     fontWeight: "700",
+  },
+  infoTitleDark: {
+    color: "#A0A0A8",
   },
   infoStatus: {
     marginTop: 2,
@@ -344,10 +373,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
   },
+  infoStatusDark: {
+    color: "#F2F2F4",
+  },
   infoMeta: {
     marginTop: 4,
     color: "#6F4E37",
     fontSize: 13,
+  },
+  infoMetaDark: {
+    color: "#D7B48A",
   },
   centerState: {
     flex: 1,
@@ -359,6 +394,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: "#8D7A6B",
     textAlign: "center",
+  },
+  stateTextDark: {
+    color: "#A0A0A8",
   },
   errorText: {
     marginTop: 8,

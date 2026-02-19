@@ -11,6 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { getOrdersService, type OrderRecord } from "../../data/services/orderService";
 import { getToken } from "../../shared/storage/authStorage";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 type ShipmentOrder = {
   id: number;
@@ -82,6 +83,7 @@ const toShipmentOrder = (order: OrderRecord): ShipmentOrder | null => {
 };
 
 export function ShipmentsScreen({ navigation }: any) {
+  const { isDarkMode } = useThemeMode();
   const [orders, setOrders] = useState<ShipmentOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -136,18 +138,21 @@ export function ShipmentsScreen({ navigation }: any) {
     }, [loadShipments])
   );
 
+  const primaryIcon = isDarkMode ? "#D7B48A" : "#6F4E37";
+  const secondaryIcon = isDarkMode ? "#8F8E96" : "#919191";
+
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
+    <View style={[styles.screen, isDarkMode && styles.screenDark]}>
+      <View style={[styles.header, isDarkMode && styles.headerDark]}>
         <TouchableOpacity
           style={styles.headerIconButton}
           onPress={() => navigation.goBack()}
           accessibilityLabel="Volver"
         >
-          <MaterialCommunityIcons name="chevron-left" size={34} color="#6F4E37" />
+          <MaterialCommunityIcons name="chevron-left" size={34} color={primaryIcon} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Envios</Text>
+        <Text style={[styles.headerTitle, isDarkMode && styles.headerTitleDark]}>Envios</Text>
 
         <TouchableOpacity
           style={styles.headerIconButton}
@@ -155,29 +160,37 @@ export function ShipmentsScreen({ navigation }: any) {
           accessibilityLabel="Actualizar envios"
         >
           {refreshing ? (
-            <ActivityIndicator size="small" color="#6F4E37" />
+            <ActivityIndicator size="small" color={primaryIcon} />
           ) : (
-            <MaterialCommunityIcons name="refresh" size={22} color="#6F4E37" />
+            <MaterialCommunityIcons name="refresh" size={22} color={primaryIcon} />
           )}
         </TouchableOpacity>
       </View>
 
-      <View style={styles.summaryCard}>
+      <View style={[styles.summaryCard, isDarkMode && styles.summaryCardDark]}>
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryValue}>{orders.length}</Text>
-          <Text style={styles.summaryLabel}>Total</Text>
+          <Text style={[styles.summaryValue, isDarkMode && styles.summaryValueDark]}>
+            {orders.length}
+          </Text>
+          <Text style={[styles.summaryLabel, isDarkMode && styles.summaryLabelDark]}>Total</Text>
         </View>
-        <View style={styles.summaryDivider} />
+        <View style={[styles.summaryDivider, isDarkMode && styles.summaryDividerDark]} />
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryValue}>{activeCount}</Text>
-          <Text style={styles.summaryLabel}>En ruta</Text>
+          <Text style={[styles.summaryValue, isDarkMode && styles.summaryValueDark]}>
+            {activeCount}
+          </Text>
+          <Text style={[styles.summaryLabel, isDarkMode && styles.summaryLabelDark]}>
+            En ruta
+          </Text>
         </View>
       </View>
 
       {loading ? (
         <View style={styles.centerState}>
-          <ActivityIndicator color="#6F4E37" />
-          <Text style={styles.stateText}>Cargando envios...</Text>
+          <ActivityIndicator color={primaryIcon} />
+          <Text style={[styles.stateText, isDarkMode && styles.stateTextDark]}>
+            Cargando envios...
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -186,7 +199,7 @@ export function ShipmentsScreen({ navigation }: any) {
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.orderCard}
+              style={[styles.orderCard, isDarkMode && styles.orderCardDark]}
               activeOpacity={0.86}
               onPress={() =>
                 navigation.navigate("Tracking", {
@@ -195,19 +208,25 @@ export function ShipmentsScreen({ navigation }: any) {
               }
             >
               <View style={styles.orderTopRow}>
-                <Text style={styles.orderId}>{`Orden #${item.id}`}</Text>
-                <Text style={styles.orderStatus}>{item.status}</Text>
+                <Text style={[styles.orderId, isDarkMode && styles.orderIdDark]}>{`Orden #${item.id}`}</Text>
+                <Text style={[styles.orderStatus, isDarkMode && styles.orderStatusDark]}>
+                  {item.status}
+                </Text>
               </View>
 
-              <Text style={styles.orderMeta}>{`Fecha: ${item.dateLabel}`}</Text>
-              <Text style={styles.orderMeta}>
+              <Text style={[styles.orderMeta, isDarkMode && styles.orderMetaDark]}>
+                {`Fecha: ${item.dateLabel}`}
+              </Text>
+              <Text style={[styles.orderMeta, isDarkMode && styles.orderMetaDark]}>
                 {item.etaMinutes !== null
                   ? `ETA aprox: ${item.etaMinutes} min`
                   : "ETA: por confirmar"}
               </Text>
 
               <View style={styles.orderBottomRow}>
-                <Text style={styles.orderTotal}>{formatMoney(item.total)}</Text>
+                <Text style={[styles.orderTotal, isDarkMode && styles.orderTotalDark]}>
+                  {formatMoney(item.total)}
+                </Text>
                 <View style={styles.trackButton}>
                   <MaterialCommunityIcons
                     name="map-marker-path"
@@ -221,38 +240,53 @@ export function ShipmentsScreen({ navigation }: any) {
           )}
           ListEmptyComponent={
             <View style={styles.centerState}>
-              <Text style={styles.stateText}>No hay envios para mostrar</Text>
+              <Text style={[styles.stateText, isDarkMode && styles.stateTextDark]}>
+                No hay envios para mostrar
+              </Text>
             </View>
           }
           ListFooterComponent={error ? <Text style={styles.errorText}>{error}</Text> : null}
         />
       )}
 
-      <View style={styles.bottomNav}>
+      <View style={[styles.bottomNav, isDarkMode && styles.bottomNavDark]}>
         <TouchableOpacity style={styles.bottomItem} onPress={() => navigation.navigate("Home")}>
-          <MaterialCommunityIcons name="home-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Inicio</Text>
+          <MaterialCommunityIcons name="home-outline" size={28} color={secondaryIcon} />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>Inicio</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.bottomItem} activeOpacity={0.85}>
-          <MaterialCommunityIcons name="truck-delivery" size={28} color="#25B5E7" />
-          <Text style={[styles.bottomLabel, styles.bottomLabelActive]}>Envios</Text>
+          <MaterialCommunityIcons
+            name="truck-delivery"
+            size={28}
+            color={isDarkMode ? "#D7B48A" : "#25B5E7"}
+          />
+          <Text
+            style={[
+              styles.bottomLabel,
+              styles.bottomLabelActive,
+              isDarkMode && styles.bottomLabelDark,
+              isDarkMode && styles.bottomLabelActiveDark,
+            ]}
+          >
+            Envios
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.bottomItem}
           onPress={() => navigation.navigate("Orders")}
         >
-          <MaterialCommunityIcons name="shopping-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Pedidos</Text>
+          <MaterialCommunityIcons name="shopping-outline" size={28} color={secondaryIcon} />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>Pedidos</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.bottomItem}
           onPress={() => navigation.navigate("Profile")}
         >
-          <MaterialCommunityIcons name="account-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Perfil</Text>
+          <MaterialCommunityIcons name="account-outline" size={28} color={secondaryIcon} />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>Perfil</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -264,6 +298,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F3EEE8",
   },
+  screenDark: {
+    backgroundColor: "#121214",
+  },
   header: {
     height: 92,
     backgroundColor: "#F3EEE8",
@@ -272,6 +309,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 14,
     paddingBottom: 10,
+  },
+  headerDark: {
+    backgroundColor: "#121214",
   },
   headerIconButton: {
     width: 44,
@@ -282,6 +322,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "800",
     color: "#111111",
+  },
+  headerTitleDark: {
+    color: "#F2F2F4",
   },
   summaryCard: {
     marginHorizontal: 16,
@@ -296,6 +339,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 14,
   },
+  summaryCardDark: {
+    borderColor: "#2E2E33",
+    backgroundColor: "#1A1A1E",
+  },
   summaryItem: {
     flex: 1,
     alignItems: "center",
@@ -305,16 +352,25 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: "#E8DED4",
   },
+  summaryDividerDark: {
+    backgroundColor: "#34343B",
+  },
   summaryValue: {
     fontSize: 22,
     fontWeight: "900",
     color: "#6F4E37",
+  },
+  summaryValueDark: {
+    color: "#D7B48A",
   },
   summaryLabel: {
     marginTop: 2,
     color: "#8D7A6B",
     fontSize: 12,
     fontWeight: "700",
+  },
+  summaryLabelDark: {
+    color: "#A0A0A8",
   },
   listContent: {
     paddingHorizontal: 16,
@@ -328,6 +384,10 @@ const styles = StyleSheet.create({
     padding: 13,
     marginBottom: 10,
   },
+  orderCardDark: {
+    backgroundColor: "#1A1A1E",
+    borderColor: "#2E2E33",
+  },
   orderTopRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -338,15 +398,24 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 15,
   },
+  orderIdDark: {
+    color: "#F2F2F4",
+  },
   orderStatus: {
     color: "#7A5230",
     fontWeight: "700",
     fontSize: 12,
   },
+  orderStatusDark: {
+    color: "#E1C29F",
+  },
   orderMeta: {
     marginTop: 6,
     color: "#8D7A6B",
     fontSize: 12,
+  },
+  orderMetaDark: {
+    color: "#A0A0A8",
   },
   orderBottomRow: {
     marginTop: 10,
@@ -358,6 +427,9 @@ const styles = StyleSheet.create({
     color: "#6F4E37",
     fontSize: 16,
     fontWeight: "800",
+  },
+  orderTotalDark: {
+    color: "#D7B48A",
   },
   trackButton: {
     flexDirection: "row",
@@ -382,6 +454,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: "#8D7A6B",
   },
+  stateTextDark: {
+    color: "#A0A0A8",
+  },
   errorText: {
     marginTop: 10,
     color: "#b42318",
@@ -397,6 +472,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 4,
   },
+  bottomNavDark: {
+    borderTopColor: "#2E2E33",
+    backgroundColor: "#1A1A1E",
+  },
   bottomItem: {
     minWidth: 64,
     alignItems: "center",
@@ -408,9 +487,15 @@ const styles = StyleSheet.create({
     fontSize: 8,
     fontWeight: "500",
   },
+  bottomLabelDark: {
+    color: "#A0A0A8",
+  },
   bottomLabelActive: {
     color: "#25B5E7",
     fontWeight: "700",
+  },
+  bottomLabelActiveDark: {
+    color: "#D7B48A",
   },
 });
 

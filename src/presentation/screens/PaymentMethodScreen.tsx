@@ -15,6 +15,7 @@ import { clearCartService, getCartService } from "../../data/services/cartServic
 import { listAddressesService, type AddressItem } from "../../data/services/addressService";
 import { createOrderService } from "../../data/services/orderService";
 import { getToken } from "../../shared/storage/authStorage";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 type CartItem = {
   id?: number | string;
@@ -100,6 +101,7 @@ const getOrderIdentifier = (order: Record<string, unknown>): string | null => {
 };
 
 export function PaymentMethodScreen({ navigation, route }: any) {
+  const { isDarkMode } = useThemeMode();
   const routeAddressParam = route?.params?.address as AddressItem | undefined;
   const routeDeliveryInstructionsParam: string =
     typeof route?.params?.deliveryInstructions === "string"
@@ -253,6 +255,7 @@ export function PaymentMethodScreen({ navigation, route }: any) {
 
   const selectedMethodLabel =
     PAYMENT_METHODS.find((method) => method.id === selectedMethod)?.label ?? "Pago";
+  const primaryIcon = isDarkMode ? "#D7B48A" : "#6F4E37";
 
   const handleConfirmOrder = async () => {
     if (!canConfirm) {
@@ -378,17 +381,19 @@ export function PaymentMethodScreen({ navigation, route }: any) {
   };
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
+    <View style={[styles.screen, isDarkMode && styles.screenDark]}>
+      <View style={[styles.header, isDarkMode && styles.headerDark]}>
         <TouchableOpacity
           style={styles.headerIconButton}
           onPress={() => navigation.goBack()}
           accessibilityLabel="Volver"
         >
-          <MaterialCommunityIcons name="chevron-left" size={36} color="#6F4E37" />
+          <MaterialCommunityIcons name="chevron-left" size={36} color={primaryIcon} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Metodo de Pago</Text>
+        <Text style={[styles.headerTitle, isDarkMode && styles.headerTitleDark]}>
+          Metodo de Pago
+        </Text>
 
         <TouchableOpacity
           style={styles.headerIconButton}
@@ -408,14 +413,16 @@ export function PaymentMethodScreen({ navigation, route }: any) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.summaryTopBar}>
+      <View style={[styles.summaryTopBar, isDarkMode && styles.summaryTopBarDark]}>
         <View style={styles.summaryTopLeft}>
-          <MaterialCommunityIcons name="cart-outline" size={30} color="#6F4E37" />
-          <Text style={styles.summaryTopText}>
+          <MaterialCommunityIcons name="cart-outline" size={30} color={primaryIcon} />
+          <Text style={[styles.summaryTopText, isDarkMode && styles.summaryTopTextDark]}>
             {cartItems.length} {cartItems.length === 1 ? "producto" : "productos"}
           </Text>
         </View>
-        <Text style={styles.summaryTopSecondary}>{totalItems} items</Text>
+        <Text style={[styles.summaryTopSecondary, isDarkMode && styles.summaryTopSecondaryDark]}>
+          {totalItems} items
+        </Text>
       </View>
 
       <ScrollView
@@ -425,91 +432,143 @@ export function PaymentMethodScreen({ navigation, route }: any) {
       >
         {loading ? (
           <View style={styles.loadingWrap}>
-            <ActivityIndicator color="#6F4E37" />
-            <Text style={styles.loadingText}>Cargando resumen...</Text>
+            <ActivityIndicator color={primaryIcon} />
+            <Text style={[styles.loadingText, isDarkMode && styles.loadingTextDark]}>
+              Cargando resumen...
+            </Text>
           </View>
         ) : (
           <>
-            <View style={styles.sectionCard}>
+            <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
               <View style={styles.sectionTitleRow}>
-                <MaterialCommunityIcons name="map-marker-radius-outline" size={20} color="#6F4E37" />
-                <Text style={styles.sectionTitle}>Direccion de entrega</Text>
+                <MaterialCommunityIcons
+                  name="map-marker-radius-outline"
+                  size={20}
+                  color={primaryIcon}
+                />
+                <Text style={[styles.sectionTitle, isDarkMode && styles.sectionTitleDark]}>
+                  Direccion de entrega
+                </Text>
               </View>
 
               {address ? (
-                <View style={styles.addressCard}>
-                  <View style={styles.addressIconWrap}>
-                    <MaterialCommunityIcons name="map-marker" size={22} color="#6F4E37" />
+                <View style={[styles.addressCard, isDarkMode && styles.addressCardDark]}>
+                  <View style={[styles.addressIconWrap, isDarkMode && styles.addressIconWrapDark]}>
+                    <MaterialCommunityIcons name="map-marker" size={22} color={primaryIcon} />
                   </View>
                   <View style={styles.addressTextWrap}>
-                    <Text style={styles.addressMain}>
+                    <Text style={[styles.addressMain, isDarkMode && styles.addressMainDark]}>
                       {[address.main_address, address.city].filter(Boolean).join(", ")}
                     </Text>
                     {!!address.secondary_street && (
-                      <Text style={styles.addressSecondary}>{address.secondary_street}</Text>
+                      <Text
+                        style={[styles.addressSecondary, isDarkMode && styles.addressSecondaryDark]}
+                      >
+                        {address.secondary_street}
+                      </Text>
                     )}
                     {address.is_default && (
-                      <Text style={styles.defaultTag}>Predeterminada</Text>
+                      <Text style={[styles.defaultTag, isDarkMode && styles.defaultTagDark]}>
+                        Predeterminada
+                      </Text>
                     )}
                   </View>
                 </View>
               ) : (
-                <Text style={styles.emptyText}>No hay direccion seleccionada.</Text>
+                <Text style={[styles.emptyText, isDarkMode && styles.emptyTextDark]}>
+                  No hay direccion seleccionada.
+                </Text>
               )}
 
-              <TouchableOpacity style={styles.secondaryButton} onPress={handleSwitchAddress}>
-                <MaterialCommunityIcons name="refresh" size={18} color="#6F4E37" />
-                <Text style={styles.secondaryButtonText}>
+              <TouchableOpacity
+                style={[styles.secondaryButton, isDarkMode && styles.secondaryButtonDark]}
+                onPress={handleSwitchAddress}
+              >
+                <MaterialCommunityIcons name="refresh" size={18} color={primaryIcon} />
+                <Text
+                  style={[styles.secondaryButtonText, isDarkMode && styles.secondaryButtonTextDark]}
+                >
                   {addresses.length > 1 ? "Cambiar direccion" : "Elegir direccion"}
                 </Text>
               </TouchableOpacity>
             </View>
 
-            <View style={styles.sectionCard}>
+            <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
               <View style={styles.sectionTitleRow}>
-                <MaterialCommunityIcons name="text-box-edit-outline" size={20} color="#6F4E37" />
-                <Text style={styles.sectionTitle}>Instrucciones de entrega</Text>
+                <MaterialCommunityIcons
+                  name="text-box-edit-outline"
+                  size={20}
+                  color={primaryIcon}
+                />
+                <Text style={[styles.sectionTitle, isDarkMode && styles.sectionTitleDark]}>
+                  Instrucciones de entrega
+                </Text>
               </View>
               <TextInput
-                style={styles.instructionsInput}
+                style={[styles.instructionsInput, isDarkMode && styles.instructionsInputDark]}
                 placeholder="Ej: llamar al llegar"
-                placeholderTextColor="#bcbcc2"
+                placeholderTextColor={isDarkMode ? "#8F8E96" : "#bcbcc2"}
                 value={instructions}
                 onChangeText={setInstructions}
                 multiline
                 maxLength={180}
                 textAlignVertical="top"
               />
-              <Text style={styles.counterText}>{instructions.length}/180</Text>
+              <Text style={[styles.counterText, isDarkMode && styles.counterTextDark]}>
+                {instructions.length}/180
+              </Text>
             </View>
 
-            <View style={styles.sectionCard}>
+            <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
               <View style={styles.sectionTitleRow}>
-                <MaterialCommunityIcons name="credit-card-outline" size={20} color="#6F4E37" />
-                <Text style={styles.sectionTitle}>Metodo de pago</Text>
+                <MaterialCommunityIcons name="credit-card-outline" size={20} color={primaryIcon} />
+                <Text style={[styles.sectionTitle, isDarkMode && styles.sectionTitleDark]}>
+                  Metodo de pago
+                </Text>
               </View>
               {PAYMENT_METHODS.map((method) => {
                 const active = selectedMethod === method.id;
                 return (
                   <TouchableOpacity
                     key={method.id}
-                    style={[styles.methodCard, active && styles.methodCardActive]}
+                    style={[
+                      styles.methodCard,
+                      active && styles.methodCardActive,
+                      isDarkMode && styles.methodCardDark,
+                      active && isDarkMode && styles.methodCardActiveDark,
+                    ]}
                     onPress={() => setSelectedMethod(method.id)}
                     activeOpacity={0.85}
                   >
-                    <View style={[styles.methodIconWrap, active && styles.methodIconWrapActive]}>
+                    <View
+                      style={[
+                        styles.methodIconWrap,
+                        active && styles.methodIconWrapActive,
+                        isDarkMode && styles.methodIconWrapDark,
+                      ]}
+                    >
                       <MaterialCommunityIcons
                         name={method.icon}
                         size={20}
-                        color={active ? "#ffffff" : "#6F4E37"}
+                        color={active ? "#ffffff" : primaryIcon}
                       />
                     </View>
                     <View style={styles.methodTextWrap}>
-                      <Text style={[styles.methodTitle, active && styles.methodTitleActive]}>
+                      <Text
+                        style={[
+                          styles.methodTitle,
+                          active && styles.methodTitleActive,
+                          isDarkMode && styles.methodTitleDark,
+                        ]}
+                      >
                         {method.label}
                       </Text>
                       <Text
-                        style={[styles.methodDescription, active && styles.methodDescriptionActive]}
+                        style={[
+                          styles.methodDescription,
+                          active && styles.methodDescriptionActive,
+                          isDarkMode && styles.methodDescriptionDark,
+                        ]}
                       >
                         {method.description}
                       </Text>
@@ -518,7 +577,7 @@ export function PaymentMethodScreen({ navigation, route }: any) {
                       <MaterialCommunityIcons
                         name="check-circle"
                         size={22}
-                        color="#6F4E37"
+                        color={primaryIcon}
                       />
                     )}
                   </TouchableOpacity>
@@ -526,13 +585,21 @@ export function PaymentMethodScreen({ navigation, route }: any) {
               })}
             </View>
 
-            <View style={styles.sectionCard}>
+            <View style={[styles.sectionCard, isDarkMode && styles.sectionCardDark]}>
               <View style={styles.sectionTitleRow}>
-                <MaterialCommunityIcons name="receipt-text-outline" size={20} color="#6F4E37" />
-                <Text style={styles.sectionTitle}>Productos</Text>
+                <MaterialCommunityIcons
+                  name="receipt-text-outline"
+                  size={20}
+                  color={primaryIcon}
+                />
+                <Text style={[styles.sectionTitle, isDarkMode && styles.sectionTitleDark]}>
+                  Productos
+                </Text>
               </View>
               {cartItems.length === 0 ? (
-                <Text style={styles.emptyText}>No hay productos en el carrito.</Text>
+                <Text style={[styles.emptyText, isDarkMode && styles.emptyTextDark]}>
+                  No hay productos en el carrito.
+                </Text>
               ) : (
                 cartItems.map((item, index) => {
                   const productName = item.product_name ?? item.name ?? `Producto ${index + 1}`;
@@ -541,12 +608,22 @@ export function PaymentMethodScreen({ navigation, route }: any) {
                   return (
                     <View
                       key={`${productName}-${index}`}
-                      style={[styles.productRow, index > 0 && styles.productRowBorder]}
+                      style={[
+                        styles.productRow,
+                        index > 0 && styles.productRowBorder,
+                        index > 0 && isDarkMode && styles.productRowBorderDark,
+                      ]}
                     >
-                      <Text style={styles.productName}>{productName}</Text>
+                      <Text style={[styles.productName, isDarkMode && styles.productNameDark]}>
+                        {productName}
+                      </Text>
                       <View style={styles.productRight}>
-                        <Text style={styles.productQty}>x{qty}</Text>
-                        <Text style={styles.productPrice}>{formatMoney(unitPrice * qty)}</Text>
+                        <Text style={[styles.productQty, isDarkMode && styles.productQtyDark]}>
+                          x{qty}
+                        </Text>
+                        <Text style={[styles.productPrice, isDarkMode && styles.productPriceDark]}>
+                          {formatMoney(unitPrice * qty)}
+                        </Text>
                       </View>
                     </View>
                   );
@@ -554,27 +631,45 @@ export function PaymentMethodScreen({ navigation, route }: any) {
               )}
             </View>
 
-            <View style={styles.totalsBlock}>
+            <View style={[styles.totalsBlock, isDarkMode && styles.totalsBlockDark]}>
               <View style={styles.totalRow}>
-                <Text style={styles.totalLabelStrong}>Subtotal productos</Text>
-                <Text style={styles.totalValueStrong}>{formatMoney(subtotalProducts)}</Text>
+                <Text style={[styles.totalLabelStrong, isDarkMode && styles.totalLabelStrongDark]}>
+                  Subtotal productos
+                </Text>
+                <Text style={[styles.totalValueStrong, isDarkMode && styles.totalValueStrongDark]}>
+                  {formatMoney(subtotalProducts)}
+                </Text>
               </View>
               <View style={styles.totalRow}>
-                <Text style={styles.totalLabelMuted}>Zona de entrega</Text>
-                <Text style={styles.totalValueStrong}>{DELIVERY_ZONE_LABEL}</Text>
+                <Text style={[styles.totalLabelMuted, isDarkMode && styles.totalLabelMutedDark]}>
+                  Zona de entrega
+                </Text>
+                <Text style={[styles.totalValueStrong, isDarkMode && styles.totalValueStrongDark]}>
+                  {DELIVERY_ZONE_LABEL}
+                </Text>
               </View>
               <View style={styles.totalRow}>
-                <Text style={styles.totalLabel}>Envio</Text>
-                <Text style={styles.totalValueStrong}>{formatMoney(shippingFee)}</Text>
+                <Text style={[styles.totalLabel, isDarkMode && styles.totalLabelDark]}>Envio</Text>
+                <Text style={[styles.totalValueStrong, isDarkMode && styles.totalValueStrongDark]}>
+                  {formatMoney(shippingFee)}
+                </Text>
               </View>
               <View style={styles.totalRow}>
-                <Text style={styles.totalLabel}>Recargo multi-proveedor</Text>
-                <Text style={styles.totalValueStrong}>{formatMoney(surcharge)}</Text>
+                <Text style={[styles.totalLabel, isDarkMode && styles.totalLabelDark]}>
+                  Recargo multi-proveedor
+                </Text>
+                <Text style={[styles.totalValueStrong, isDarkMode && styles.totalValueStrongDark]}>
+                  {formatMoney(surcharge)}
+                </Text>
               </View>
-              <View style={styles.divider} />
+              <View style={[styles.divider, isDarkMode && styles.dividerDark]} />
               <View style={styles.totalRow}>
-                <Text style={styles.totalPayLabel}>Total a pagar</Text>
-                <Text style={styles.totalPayValue}>{formatMoney(totalToPay)}</Text>
+                <Text style={[styles.totalPayLabel, isDarkMode && styles.totalPayLabelDark]}>
+                  Total a pagar
+                </Text>
+                <Text style={[styles.totalPayValue, isDarkMode && styles.totalPayValueDark]}>
+                  {formatMoney(totalToPay)}
+                </Text>
               </View>
             </View>
 
@@ -583,7 +678,7 @@ export function PaymentMethodScreen({ navigation, route }: any) {
         )}
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, isDarkMode && styles.footerDark]}>
         <TouchableOpacity
           style={[styles.confirmButton, !canConfirm && styles.confirmButtonDisabled]}
           disabled={!canConfirm}
@@ -605,6 +700,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F3EEE8",
   },
+  screenDark: {
+    backgroundColor: "#121214",
+  },
   header: {
     height: 92,
     backgroundColor: "#F3EEE8",
@@ -613,6 +711,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 14,
     paddingBottom: 10,
+  },
+  headerDark: {
+    backgroundColor: "#121214",
   },
   headerIconButton: {
     width: 44,
@@ -623,6 +724,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "800",
     color: "#111111",
+  },
+  headerTitleDark: {
+    color: "#F2F2F4",
   },
   summaryTopBar: {
     height: 72,
@@ -635,6 +739,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  summaryTopBarDark: {
+    backgroundColor: "#1A1A1E",
+    borderColor: "#2E2E33",
+  },
   summaryTopLeft: {
     flexDirection: "row",
     alignItems: "center",
@@ -645,9 +753,15 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111111",
   },
+  summaryTopTextDark: {
+    color: "#F2F2F4",
+  },
   summaryTopSecondary: {
     fontSize: 15,
     color: "#8c8c92",
+  },
+  summaryTopSecondaryDark: {
+    color: "#A0A0A8",
   },
   content: {
     flex: 1,
@@ -666,6 +780,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: "#7d7d82",
   },
+  loadingTextDark: {
+    color: "#A0A0A8",
+  },
   sectionCard: {
     backgroundColor: "#ffffff",
     borderRadius: 18,
@@ -673,6 +790,10 @@ const styles = StyleSheet.create({
     borderColor: "#E3D8CE",
     padding: 14,
     marginBottom: 12,
+  },
+  sectionCardDark: {
+    backgroundColor: "#1A1A1E",
+    borderColor: "#2E2E33",
   },
   sectionTitleRow: {
     flexDirection: "row",
@@ -685,6 +806,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111111",
   },
+  sectionTitleDark: {
+    color: "#F2F2F4",
+  },
   addressCard: {
     borderRadius: 14,
     borderWidth: 1,
@@ -693,6 +817,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FCFAF8",
     flexDirection: "row",
     alignItems: "flex-start",
+  },
+  addressCardDark: {
+    borderColor: "#34343B",
+    backgroundColor: "#232329",
   },
   addressIconWrap: {
     width: 44,
@@ -703,6 +831,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 10,
   },
+  addressIconWrapDark: {
+    backgroundColor: "#2A211A",
+  },
   addressTextWrap: {
     flex: 1,
   },
@@ -711,10 +842,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#111111",
   },
+  addressMainDark: {
+    color: "#F2F2F4",
+  },
   addressSecondary: {
     marginTop: 2,
     color: "#6f6f75",
     fontSize: 14,
+  },
+  addressSecondaryDark: {
+    color: "#B6B6BC",
   },
   defaultTag: {
     alignSelf: "flex-start",
@@ -727,9 +864,16 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 8,
   },
+  defaultTagDark: {
+    backgroundColor: "#2A211A",
+    color: "#E1C29F",
+  },
   emptyText: {
     color: "#8D7A6B",
     fontSize: 14,
+  },
+  emptyTextDark: {
+    color: "#B6B6BC",
   },
   secondaryButton: {
     marginTop: 10,
@@ -741,11 +885,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  secondaryButtonDark: {
+    backgroundColor: "#2A211A",
+  },
   secondaryButtonText: {
     marginLeft: 6,
     color: "#6F4E37",
     fontWeight: "700",
     fontSize: 14,
+  },
+  secondaryButtonTextDark: {
+    color: "#E1C29F",
   },
   instructionsInput: {
     minHeight: 84,
@@ -758,11 +908,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#111111",
   },
+  instructionsInputDark: {
+    backgroundColor: "#232329",
+    borderColor: "#34343B",
+    color: "#F2F2F4",
+  },
   counterText: {
     marginTop: 6,
     alignSelf: "flex-end",
     color: "#8D7A6B",
     fontSize: 12,
+  },
+  counterTextDark: {
+    color: "#A0A0A8",
   },
   methodCard: {
     borderRadius: 14,
@@ -774,9 +932,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
+  methodCardDark: {
+    borderColor: "#34343B",
+    backgroundColor: "#232329",
+  },
   methodCardActive: {
     borderColor: "#6F4E37",
     backgroundColor: "#F4E6D8",
+  },
+  methodCardActiveDark: {
+    borderColor: "#D7B48A",
+    backgroundColor: "#2A211A",
   },
   methodIconWrap: {
     width: 38,
@@ -786,6 +952,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
+  },
+  methodIconWrapDark: {
+    backgroundColor: "#2C2C31",
   },
   methodIconWrapActive: {
     backgroundColor: "#6F4E37",
@@ -798,6 +967,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 16,
   },
+  methodTitleDark: {
+    color: "#F2F2F4",
+  },
   methodTitleActive: {
     color: "#3d2f24",
   },
@@ -805,6 +977,9 @@ const styles = StyleSheet.create({
     marginTop: 2,
     color: "#8D7A6B",
     fontSize: 13,
+  },
+  methodDescriptionDark: {
+    color: "#A0A0A8",
   },
   methodDescriptionActive: {
     color: "#6F4E37",
@@ -819,11 +994,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#ece2d8",
   },
+  productRowBorderDark: {
+    borderTopColor: "#34343B",
+  },
   productName: {
     flex: 1,
     color: "#1d1d1f",
     fontSize: 15,
     paddingRight: 8,
+  },
+  productNameDark: {
+    color: "#F2F2F4",
   },
   productRight: {
     flexDirection: "row",
@@ -834,10 +1015,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 15,
   },
+  productQtyDark: {
+    color: "#A0A0A8",
+  },
   productPrice: {
     fontSize: 15,
     fontWeight: "700",
     color: "#111111",
+  },
+  productPriceDark: {
+    color: "#F2F2F4",
   },
   totalsBlock: {
     backgroundColor: "#ffffff",
@@ -846,6 +1033,10 @@ const styles = StyleSheet.create({
     borderColor: "#E3D8CE",
     padding: 14,
     marginBottom: 8,
+  },
+  totalsBlockDark: {
+    backgroundColor: "#1A1A1E",
+    borderColor: "#2E2E33",
   },
   totalRow: {
     flexDirection: "row",
@@ -858,18 +1049,30 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#1a1a1d",
   },
+  totalLabelStrongDark: {
+    color: "#F2F2F4",
+  },
   totalLabelMuted: {
     fontSize: 15,
     color: "#8c8c92",
+  },
+  totalLabelMutedDark: {
+    color: "#A0A0A8",
   },
   totalLabel: {
     fontSize: 15,
     color: "#1f1f24",
   },
+  totalLabelDark: {
+    color: "#D6D6DC",
+  },
   totalValueStrong: {
     fontSize: 16,
     fontWeight: "700",
     color: "#111111",
+  },
+  totalValueStrongDark: {
+    color: "#F2F2F4",
   },
   divider: {
     marginTop: 8,
@@ -877,15 +1080,24 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#d8cbbf",
   },
+  dividerDark: {
+    borderTopColor: "#34343B",
+  },
   totalPayLabel: {
     fontSize: 20,
     fontWeight: "900",
     color: "#111111",
   },
+  totalPayLabelDark: {
+    color: "#F2F2F4",
+  },
   totalPayValue: {
     fontSize: 22,
     fontWeight: "900",
     color: "#111111",
+  },
+  totalPayValueDark: {
+    color: "#D7B48A",
   },
   errorText: {
     color: "#b42318",
@@ -899,6 +1111,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 16,
+  },
+  footerDark: {
+    borderTopColor: "#2E2E33",
+    backgroundColor: "#121214",
   },
   confirmButton: {
     height: 58,

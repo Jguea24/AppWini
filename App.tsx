@@ -1,20 +1,25 @@
-﻿import React, { useEffect, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+  type Theme,
+} from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { enableScreens } from "react-native-screens";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AppNavigator } from "./src/presentation/navigation/AppNavigator";
 import { getToken } from "./src/shared/storage/authStorage";
-
-// Mejora rendimiento de navegación nativa
+import { ThemeProvider, useThemeMode } from "./src/shared/theme/ThemeContext";
 
 enableScreens(true);
 
 const ONBOARDING_KEY = "onboarding_done";
 
-export default function App() {
+function AppContent() {
+  const { isDarkMode, ready: themeReady } = useThemeMode();
   const [checkingSession, setCheckingSession] = useState(true);
   const [initialRoute, setInitialRoute] =
     useState<"Onboarding" | "Auth" | "Home">("Onboarding");
@@ -41,21 +46,57 @@ export default function App() {
     loadSession();
   }, []);
 
-  if (checkingSession) {
+  const navigationTheme = useMemo<Theme>(() => {
+    if (!isDarkMode) {
+      return {
+        ...DefaultTheme,
+        colors: {
+          ...DefaultTheme.colors,
+          primary: "#6F4E37",
+          background: "#F3EEE8",
+        },
+      };
+    }
+
+    return {
+      ...DarkTheme,
+      colors: {
+        ...DarkTheme.colors,
+        primary: "#C19A6B",
+        background: "#121214",
+        card: "#1A1A1E",
+        border: "#2E2E33",
+        text: "#F1F1F3",
+      },
+    };
+  }, [isDarkMode]);
+
+  if (checkingSession || !themeReady) {
     return (
-      <SafeAreaProvider>
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" />
-        </View>
-      </SafeAreaProvider>
+      <View
+        style={[
+          styles.loaderContainer,
+          isDarkMode && styles.loaderContainerDark,
+        ]}
+      >
+        <ActivityIndicator size="large" color={isDarkMode ? "#C19A6B" : "#6F4E37"} />
+      </View>
     );
   }
 
   return (
+    <NavigationContainer theme={navigationTheme}>
+      <AppNavigator initialRouteName={initialRoute} />
+    </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <AppNavigator initialRouteName={initialRoute} />
-      </NavigationContainer>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
@@ -65,6 +106,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#F3EEE8",
+  },
+  loaderContainerDark: {
+    backgroundColor: "#121214",
   },
 });
-

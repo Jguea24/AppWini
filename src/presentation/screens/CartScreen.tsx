@@ -20,6 +20,7 @@ import {
 } from "../../data/services/cartService";
 import { API_BASE_URL } from "../../data/services/api";
 import { getToken } from "../../shared/storage/authStorage";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 type CartItem = {
   id?: number | string;
@@ -108,6 +109,7 @@ const getUnitPrice = (item: CartItem): number =>
   toNumber(item.product_price ?? item.price, 0);
 
 export function CartScreen({ navigation }: any) {
+  const { isDarkMode } = useThemeMode();
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -301,19 +303,23 @@ export function CartScreen({ navigation }: any) {
   );
 
   const distinctProducts = items.length;
+  const primaryIcon = isDarkMode ? "#D7B48A" : "#6F4E37";
+  const secondaryIcon = isDarkMode ? "#8F8E96" : "#919191";
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
+    <View style={[styles.screen, isDarkMode && styles.screenDark]}>
+      <View style={[styles.header, isDarkMode && styles.headerDark]}>
         <TouchableOpacity
           style={styles.headerIconButton}
           onPress={() => navigation.goBack()}
           accessibilityLabel="Volver"
         >
-          <MaterialCommunityIcons name="chevron-left" size={36} color="#6F4E37" />
+          <MaterialCommunityIcons name="chevron-left" size={36} color={primaryIcon} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Mi Carrito</Text>
+        <Text style={[styles.headerTitle, isDarkMode && styles.headerTitleDark]}>
+          Mi Carrito
+        </Text>
 
         <TouchableOpacity
           style={styles.headerIconButton}
@@ -333,21 +339,25 @@ export function CartScreen({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.summaryRow}>
+      <View style={[styles.summaryRow, isDarkMode && styles.summaryRowDark]}>
         <View style={styles.summaryLeft}>
-          <MaterialCommunityIcons name="cart-outline" size={34} color="#6F4E37" />
-          <Text style={styles.summaryMainText}>
+          <MaterialCommunityIcons name="cart-outline" size={34} color={primaryIcon} />
+          <Text style={[styles.summaryMainText, isDarkMode && styles.summaryMainTextDark]}>
             {distinctProducts} {distinctProducts === 1 ? "producto" : "productos"}
           </Text>
         </View>
-        <Text style={styles.summarySecondaryText}>{totalItems} items</Text>
+        <Text style={[styles.summarySecondaryText, isDarkMode && styles.summarySecondaryTextDark]}>
+          {totalItems} items
+        </Text>
       </View>
 
       <View style={styles.listWrap}>
         {loading ? (
           <View style={styles.centerState}>
-            <ActivityIndicator color="#6F4E37" />
-            <Text style={styles.stateText}>Cargando carrito...</Text>
+            <ActivityIndicator color={primaryIcon} />
+            <Text style={[styles.stateText, isDarkMode && styles.stateTextDark]}>
+              Cargando carrito...
+            </Text>
           </View>
         ) : (
           <FlatList
@@ -356,21 +366,25 @@ export function CartScreen({ navigation }: any) {
             contentContainerStyle={styles.listContent}
             ListEmptyComponent={
               <View style={styles.centerState}>
-                <Text style={styles.stateText}>Tu carrito esta vacio</Text>
+                <Text style={[styles.stateText, isDarkMode && styles.stateTextDark]}>
+                  Tu carrito esta vacio
+                </Text>
               </View>
             }
             ListFooterComponent={
               <TouchableOpacity
-                style={styles.addMoreButton}
+                style={[styles.addMoreButton, isDarkMode && styles.addMoreButtonDark]}
                 onPress={() => navigation.navigate("Home")}
                 activeOpacity={0.85}
               >
                 <MaterialCommunityIcons
                   name="plus-circle-outline"
                   size={26}
-                  color="#6F4E37"
+                  color={primaryIcon}
                 />
-                <Text style={styles.addMoreText}>Agregar mas productos</Text>
+                <Text style={[styles.addMoreText, isDarkMode && styles.addMoreTextDark]}>
+                  Agregar mas productos
+                </Text>
               </TouchableOpacity>
             }
             renderItem={({ item, index }) => {
@@ -388,15 +402,17 @@ export function CartScreen({ navigation }: any) {
               );
 
               return (
-                <View style={styles.itemCard}>
+                <View style={[styles.itemCard, isDarkMode && styles.itemCardDark]}>
                   <Image
                     source={imageUrl ? { uri: imageUrl } : fallbackProductImage}
-                    style={styles.itemImage}
+                    style={[styles.itemImage, isDarkMode && styles.itemImageDark]}
                   />
 
                   <View style={styles.itemBody}>
                     <View style={styles.itemTitleRow}>
-                      <Text style={styles.itemName}>{name}</Text>
+                      <Text style={[styles.itemName, isDarkMode && styles.itemNameDark]}>
+                        {name}
+                      </Text>
                       <TouchableOpacity
                         style={styles.removeCircle}
                         onPress={() => void handleRemove(item, index)}
@@ -408,12 +424,17 @@ export function CartScreen({ navigation }: any) {
                     </View>
 
                     <View style={styles.unitPriceRow}>
-                      <Text style={styles.unitPriceText}>{formatMoney(unitPrice)}</Text>
-                      <Text style={styles.unitLabel}> c/u</Text>
+                      <Text style={[styles.unitPriceText, isDarkMode && styles.unitPriceTextDark]}>
+                        {formatMoney(unitPrice)}
+                      </Text>
+                      <Text style={[styles.unitLabel, isDarkMode && styles.unitLabelDark]}>
+                        {" "}
+                        c/u
+                      </Text>
                     </View>
 
                     <View style={styles.itemBottomRow}>
-                      <View style={styles.qtyControl}>
+                      <View style={[styles.qtyControl, isDarkMode && styles.qtyControlDark]}>
                         <TouchableOpacity
                           style={styles.qtyButton}
                           onPress={() => void handleDecrease(item, index)}
@@ -429,7 +450,9 @@ export function CartScreen({ navigation }: any) {
                           </Text>
                         </TouchableOpacity>
 
-                        <Text style={styles.qtyValue}>{quantity}</Text>
+                        <Text style={[styles.qtyValue, isDarkMode && styles.qtyValueDark]}>
+                          {quantity}
+                        </Text>
 
                         <TouchableOpacity
                           style={styles.qtyButton}
@@ -440,13 +463,15 @@ export function CartScreen({ navigation }: any) {
                         </TouchableOpacity>
                       </View>
 
-                      <Text style={styles.itemTotalText}>{formatMoney(subtotal)}</Text>
+                      <Text style={[styles.itemTotalText, isDarkMode && styles.itemTotalTextDark]}>
+                        {formatMoney(subtotal)}
+                      </Text>
                     </View>
 
                     {isUpdating && (
                       <ActivityIndicator
                         size="small"
-                        color="#6F4E37"
+                        color={primaryIcon}
                         style={styles.itemLoader}
                       />
                     )}
@@ -460,10 +485,14 @@ export function CartScreen({ navigation }: any) {
         {!!error && <Text style={styles.errorText}>{error}</Text>}
       </View>
 
-      <View style={styles.checkoutPanel}>
+      <View style={[styles.checkoutPanel, isDarkMode && styles.checkoutPanelDark]}>
         <View style={styles.subtotalRow}>
-          <Text style={styles.subtotalLabel}>Subtotal:</Text>
-          <Text style={styles.subtotalValue}>{formatMoney(total)}</Text>
+          <Text style={[styles.subtotalLabel, isDarkMode && styles.subtotalLabelDark]}>
+            Subtotal:
+          </Text>
+          <Text style={[styles.subtotalValue, isDarkMode && styles.subtotalValueDark]}>
+            {formatMoney(total)}
+          </Text>
         </View>
 
         <TouchableOpacity
@@ -474,31 +503,40 @@ export function CartScreen({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.bottomNav}>
+      <View style={[styles.bottomNav, isDarkMode && styles.bottomNavDark]}>
         <TouchableOpacity style={styles.bottomItem} onPress={() => navigation.navigate("Home")}>
-          <MaterialCommunityIcons name="home" size={28} color="#6F4E37" />
-          <Text style={[styles.bottomLabel, styles.bottomLabelActive]}>Inicio</Text>
+          <MaterialCommunityIcons name="home" size={28} color={primaryIcon} />
+          <Text
+            style={[
+              styles.bottomLabel,
+              styles.bottomLabelActive,
+              isDarkMode && styles.bottomLabelDark,
+              isDarkMode && styles.bottomLabelActiveDark,
+            ]}
+          >
+            Inicio
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.bottomItem}
           onPress={() => navigation.navigate("Shipments")}
         >
-          <MaterialCommunityIcons name="cube-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Envios</Text>
+          <MaterialCommunityIcons name="cube-outline" size={28} color={secondaryIcon} />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>Envios</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.bottomItem}
           onPress={() => navigation.navigate("Orders")}
         >
-          <MaterialCommunityIcons name="shopping-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Pedidos</Text>
+          <MaterialCommunityIcons name="shopping-outline" size={28} color={secondaryIcon} />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>Pedidos</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.bottomItem} onPress={() => navigation.navigate("Profile")}>
-          <MaterialCommunityIcons name="account-outline" size={28} color="#919191" />
-          <Text style={styles.bottomLabel}>Perfil</Text>
+          <MaterialCommunityIcons name="account-outline" size={28} color={secondaryIcon} />
+          <Text style={[styles.bottomLabel, isDarkMode && styles.bottomLabelDark]}>Perfil</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -510,6 +548,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F3EEE8",
   },
+  screenDark: {
+    backgroundColor: "#121214",
+  },
   header: {
     height: 92,
     backgroundColor: "#F3EEE8",
@@ -518,6 +559,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 14,
     paddingBottom: 10,
+  },
+  headerDark: {
+    backgroundColor: "#121214",
   },
   headerIconButton: {
     width: 44,
@@ -528,6 +572,9 @@ const styles = StyleSheet.create({
     fontSize: 45 / 2,
     fontWeight: "800",
     color: "#111111",
+  },
+  headerTitleDark: {
+    color: "#F2F2F4",
   },
   summaryRow: {
     height: 74,
@@ -540,6 +587,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  summaryRowDark: {
+    backgroundColor: "#1A1A1E",
+    borderColor: "#2E2E33",
+  },
   summaryLeft: {
     flexDirection: "row",
     alignItems: "center",
@@ -550,9 +601,15 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111111",
   },
+  summaryMainTextDark: {
+    color: "#F2F2F4",
+  },
   summarySecondaryText: {
     fontSize: 20 / 2,
     color: "#919191",
+  },
+  summarySecondaryTextDark: {
+    color: "#A0A0A8",
   },
   listWrap: {
     flex: 1,
@@ -572,6 +629,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#7d7d82",
   },
+  stateTextDark: {
+    color: "#A0A0A8",
+  },
   itemCard: {
     backgroundColor: "#ffffff",
     borderRadius: 20,
@@ -581,11 +641,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 14,
   },
+  itemCardDark: {
+    backgroundColor: "#1A1A1E",
+    borderColor: "#2E2E33",
+  },
   itemImage: {
     width: 94,
     height: 94,
     borderRadius: 16,
     backgroundColor: "#f2f2f2",
+  },
+  itemImageDark: {
+    backgroundColor: "#2A2A30",
   },
   itemBody: {
     flex: 1,
@@ -603,6 +670,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111111",
     paddingRight: 8,
+  },
+  itemNameDark: {
+    color: "#F2F2F4",
   },
   removeCircle: {
     width: 30,
@@ -622,9 +692,15 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 20 / 2,
   },
+  unitPriceTextDark: {
+    color: "#E1C29F",
+  },
   unitLabel: {
     color: "#9a9aa0",
     fontSize: 16 / 2,
+  },
+  unitLabelDark: {
+    color: "#A0A0A8",
   },
   itemBottomRow: {
     flexDirection: "row",
@@ -642,6 +718,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 8,
+  },
+  qtyControlDark: {
+    borderColor: "#34343B",
+    backgroundColor: "#232329",
   },
   qtyButton: {
     width: 30,
@@ -664,10 +744,16 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111111",
   },
+  qtyValueDark: {
+    color: "#F2F2F4",
+  },
   itemTotalText: {
     fontSize: 26 / 2,
     fontWeight: "900",
     color: "#111111",
+  },
+  itemTotalTextDark: {
+    color: "#F2F2F4",
   },
   itemLoader: {
     marginTop: 8,
@@ -683,11 +769,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  addMoreButtonDark: {
+    backgroundColor: "#2A211A",
+  },
   addMoreText: {
     color: "#6F4E37",
     marginLeft: 8,
     fontSize: 18 / 2,
     fontWeight: "800",
+  },
+  addMoreTextDark: {
+    color: "#E1C29F",
   },
   errorText: {
     color: "#b42318",
@@ -703,6 +795,10 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 10,
   },
+  checkoutPanelDark: {
+    backgroundColor: "#1A1A1E",
+    borderTopColor: "#2E2E33",
+  },
   subtotalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -713,10 +809,16 @@ const styles = StyleSheet.create({
     color: "#8D7A6B",
     fontSize: 22 / 2,
   },
+  subtotalLabelDark: {
+    color: "#A0A0A8",
+  },
   subtotalValue: {
     color: "#111111",
     fontSize: 34 / 2,
     fontWeight: "900",
+  },
+  subtotalValueDark: {
+    color: "#F2F2F4",
   },
   checkoutButton: {
     height: 58,
@@ -740,6 +842,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 4,
   },
+  bottomNavDark: {
+    borderTopColor: "#2E2E33",
+    backgroundColor: "#1A1A1E",
+  },
   bottomItem: {
     minWidth: 64,
     alignItems: "center",
@@ -751,9 +857,15 @@ const styles = StyleSheet.create({
     fontSize: 16 / 2,
     fontWeight: "500",
   },
+  bottomLabelDark: {
+    color: "#A0A0A8",
+  },
   bottomLabelActive: {
     color: "#6F4E37",
     fontWeight: "700",
+  },
+  bottomLabelActiveDark: {
+    color: "#D7B48A",
   },
 });
 

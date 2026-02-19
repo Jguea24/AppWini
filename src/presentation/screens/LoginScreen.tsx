@@ -12,8 +12,10 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useAuthViewModel } from "../viewmodel/AuthViewModel";
 import { getUsername } from "../../shared/storage/authStorage";
 import { loginStyles as styles } from "../styles/login.styles";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 export function LoginScreen({ navigation }: any) {
+  const { isDarkMode } = useThemeMode();
   const { login, loading, error } = useAuthViewModel();
 
   const [username, setUsername] = useState("");
@@ -45,42 +47,48 @@ export function LoginScreen({ navigation }: any) {
   };
 
   const isValid = username.trim().length > 0 && password.length > 0;
+  const darkFieldStyle = isDarkMode
+    ? { backgroundColor: "#232329", borderColor: "#34343B" }
+    : null;
+  const darkInputText = isDarkMode ? { color: "#F2F2F4" } : null;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode && { backgroundColor: "#121214" }]}>
       <View style={styles.header}>
         <Image
           source={require("../../shared/assets/logo.png")}
           style={styles.logo}
         />
 
-        <Text style={styles.title}>Wini App</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.title, isDarkMode && { color: "#F2F2F4" }]}>Wini App</Text>
+        <Text style={[styles.subtitle, isDarkMode && { color: "#B6B6BC" }]}>
           Inicia sesion y disfruta del chocolate artesanal amazonico
         </Text>
       </View>
 
-      <View style={styles.card}>
-        <View style={styles.inputWrapper}>
+      <View style={[styles.card, isDarkMode && { backgroundColor: "#1A1A1E" }]}>
+        <View style={[styles.inputWrapper, darkFieldStyle]}>
           <MaterialCommunityIcons
             name="account-outline"
             size={20}
-            color="#6b7280"
+            color={isDarkMode ? "#A0A0A8" : "#6b7280"}
             style={styles.inputIcon}
           />
           <TextInput
-            style={styles.inputWithIcon}
+            style={[styles.inputWithIcon, darkInputText]}
             placeholder="Usuario o correo electronico"
+            placeholderTextColor={isDarkMode ? "#8F8E96" : "#9ca3af"}
             autoCapitalize="none"
             value={username}
             onChangeText={setUsername}
           />
         </View>
 
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, darkFieldStyle]}>
           <TextInput
-            style={[styles.inputWithIcon, styles.inputWithoutLeftIcon]}
+            style={[styles.inputWithIcon, styles.inputWithoutLeftIcon, darkInputText]}
             placeholder="Contrasena"
+            placeholderTextColor={isDarkMode ? "#8F8E96" : "#9ca3af"}
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
@@ -92,7 +100,7 @@ export function LoginScreen({ navigation }: any) {
             <MaterialCommunityIcons
               name={showPassword ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color="#6b7280"
+              color={isDarkMode ? "#A0A0A8" : "#6b7280"}
             />
           </TouchableOpacity>
         </View>
@@ -115,7 +123,12 @@ export function LoginScreen({ navigation }: any) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={styles.registerText}>
+          <Text
+            style={[
+              styles.registerText,
+              isDarkMode && { color: "#D7B48A" },
+            ]}
+          >
             No tienes cuenta? Crear una ahora
           </Text>
         </TouchableOpacity>

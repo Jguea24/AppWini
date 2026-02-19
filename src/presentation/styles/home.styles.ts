@@ -494,11 +494,18 @@ shopScreen: {
   flex: 1,
   backgroundColor: "#f4ede6",
 },
+shopScreenDark: {
+  backgroundColor: "#121214",
+},
 
 shopHeader: {
   paddingTop: 18,
   paddingHorizontal: 18,
   paddingBottom: 8,
+},
+
+shopBannerFullWidth: {
+  marginHorizontal: -18,
 },
 
 shopTopRow: {
@@ -523,6 +530,9 @@ shopBrand: {
   fontWeight: "800",
   color: "#3f2615",
 },
+shopBrandDark: {
+  color: "#F2F2F4",
+},
 
 shopLogoutButton: {
   width: 40,
@@ -532,6 +542,9 @@ shopLogoutButton: {
   alignItems: "center",
   justifyContent: "center",
   elevation: 2,
+},
+shopLogoutButtonDark: {
+  backgroundColor: "#1A1A1E",
 },
 
 shopSearchBar: {
@@ -543,6 +556,9 @@ shopSearchBar: {
   marginBottom: 14,
   elevation: 2,
 },
+shopSearchBarDark: {
+  backgroundColor: "#1A1A1E",
+},
 
 shopSearchInput: {
   flex: 1,
@@ -550,6 +566,9 @@ shopSearchInput: {
   fontSize: 14,
   paddingVertical: 11,
   marginLeft: 6,
+},
+shopSearchInputDark: {
+  color: "#F2F2F4",
 },
 
 shopSectionRow: {
@@ -565,11 +584,17 @@ shopSectionTitle: {
   fontWeight: "700",
   color: "#3f2615",
 },
+shopSectionTitleDark: {
+  color: "#F2F2F4",
+},
 
 shopSeeMore: {
   color: "#a08f83",
   fontSize: 12,
   fontWeight: "700",
+},
+shopSeeMoreDark: {
+  color: "#A0A0A8",
 },
 
 shopCategoryRow: {
@@ -587,10 +612,18 @@ shopCategoryCard: {
   borderWidth: 1,
   borderColor: "#efe4d8",
 },
+shopCategoryCardDark: {
+  backgroundColor: "#1A1A1E",
+  borderColor: "#2E2E33",
+},
 
 shopCategoryCardActive: {
   borderColor: "#9b6c4e",
   backgroundColor: "#fdf7f2",
+},
+shopCategoryCardActiveDark: {
+  borderColor: "#D7B48A",
+  backgroundColor: "#2A211A",
 },
 
 shopCategoryIconWrap: {
@@ -601,6 +634,9 @@ shopCategoryIconWrap: {
   alignItems: "center",
   justifyContent: "center",
   marginBottom: 6,
+},
+shopCategoryIconWrapDark: {
+  backgroundColor: "#232329",
 },
 
 shopCategoryIcon: {
@@ -614,9 +650,15 @@ shopCategoryTitle: {
   fontWeight: "600",
   color: "#6a5b52",
 },
+shopCategoryTitleDark: {
+  color: "#B6B6BC",
+},
 
 shopCategoryTitleActive: {
   color: "#3f2615",
+},
+shopCategoryTitleActiveDark: {
+  color: "#E1C29F",
 },
 
 shopListContent: {
@@ -638,6 +680,10 @@ shopProductCard: {
   borderColor: "#ede6de",
   marginBottom: 10,
   elevation: 2,
+},
+shopProductCardDark: {
+  backgroundColor: "#1A1A1E",
+  borderColor: "#2E2E33",
 },
 
 shopProductSeparator: {
@@ -661,6 +707,10 @@ shopDiscountTag: {
   paddingVertical: 2,
   borderRadius: 12,
 },
+shopDiscountTagDark: {
+  backgroundColor: "#2A4A3A",
+  color: "#9AE6C6",
+},
 
 shopProductImage: {
   width: 54,
@@ -677,6 +727,9 @@ shopProductName: {
   fontWeight: "700",
   color: "#3f2615",
   minHeight: 30,
+},
+shopProductNameDark: {
+  color: "#F2F2F4",
 },
 
 shopRatingRow: {
@@ -702,6 +755,9 @@ shopProductPrice: {
   fontSize: 16 / 2,
   fontWeight: "800",
 },
+shopProductPriceDark: {
+  color: "#9AE6C6",
+},
 
 shopProductActions: {
   flexDirection: "row",
@@ -717,11 +773,17 @@ shopIconButton: {
   justifyContent: "center",
   marginLeft: 4,
 },
+shopIconButtonDark: {
+  backgroundColor: "#232329",
+},
 
 shopSearchHint: {
   color: "#8d7a6b",
   fontSize: 12,
   marginBottom: 8,
+},
+shopSearchHintDark: {
+  color: "#A0A0A8",
 },
 
 shopStatusContainer: {
@@ -736,6 +798,9 @@ shopStatusText: {
   fontSize: 13,
   textAlign: "center",
 },
+shopStatusTextDark: {
+  color: "#B6B6BC",
+},
 
 shopStatusError: {
   color: "#b42318",
@@ -746,6 +811,9 @@ shopEmptyText: {
   color: "#6a5b52",
   paddingTop: 28,
   fontSize: 14,
+},
+shopEmptyTextDark: {
+  color: "#B6B6BC",
 },
 
 shopBottomNavWrapper: {
@@ -768,6 +836,9 @@ shopOrderButton: {
   alignItems: "center",
   justifyContent: "center",
   elevation: 4,
+},
+shopOrderButtonDark: {
+  backgroundColor: "#1A1A1E",
 },
 
 shopOrderIconWrap: {
@@ -808,6 +879,9 @@ shopOrderButtonText: {
   fontSize: 16,
   fontWeight: "700",
 },
+shopOrderButtonTextDark: {
+  color: "#D7B48A",
+},
 
 shopBottomNav: {
   backgroundColor: "#ffffff",
@@ -819,6 +893,10 @@ shopBottomNav: {
   flexDirection: "row",
   justifyContent: "space-around",
   alignItems: "center",
+},
+shopBottomNavDark: {
+  backgroundColor: "#1A1A1E",
+  borderTopColor: "#2E2E33",
 },
 
 shopBottomItem: {
@@ -834,10 +912,16 @@ shopBottomLabel: {
   fontWeight: "500",
   marginTop: 2,
 },
+shopBottomLabelDark: {
+  color: "#A0A0A8",
+},
 
 shopBottomLabelActive: {
   color: "#1da1dc",
   fontWeight: "600",
+},
+shopBottomLabelActiveDark: {
+  color: "#D7B48A",
 },
 
   flatListContent: {

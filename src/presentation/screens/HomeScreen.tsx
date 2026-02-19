@@ -23,6 +23,7 @@ import { Category } from "../../domain/entities/category";
 import { Product } from "../../domain/entities/Product";
 import BannerCarousel, { BannerItem } from "../components/BannerCarousel";
 import { homeStyles as styles } from "../styles/home.styles";
+import { useThemeMode } from "../../shared/theme/ThemeContext";
 
 type UiCategory = Category & {
   id: number;
@@ -125,6 +126,7 @@ const mapProductToItem = (product: Product): ChocolateItem => {
 };
 
 export function HomeScreen({ navigation }: any) {
+  const { isDarkMode } = useThemeMode();
   const {
     addToCart,
     loading: cartLoading,
@@ -247,8 +249,12 @@ export function HomeScreen({ navigation }: any) {
     );
   };
 
+  const primaryColor = isDarkMode ? "#D7B48A" : "#6f4e37";
+  const mutedColor = isDarkMode ? "#A0A0A8" : "#8a7d74";
+  const inactiveBottomIcon = isDarkMode ? "#8F8E96" : "#8f8f8f";
+
   return (
-    <View style={styles.shopScreen}>
+    <View style={[styles.shopScreen, isDarkMode && styles.shopScreenDark]}>
       <FlatList
         data={filteredProducts}
         numColumns={2}
@@ -261,42 +267,50 @@ export function HomeScreen({ navigation }: any) {
             <View style={styles.shopTopRow}>
               <View style={styles.shopTopIconPlaceholder} />
 
-              <Text style={styles.shopBrand}>Wini Store</Text>
+              <Text style={[styles.shopBrand, isDarkMode && styles.shopBrandDark]}>
+                Wini Store
+              </Text>
 
               <TouchableOpacity
-                style={styles.shopLogoutButton}
+                style={[styles.shopLogoutButton, isDarkMode && styles.shopLogoutButtonDark]}
                 onPress={logout}
                 accessibilityLabel="Cerrar sesion"
               >
                 <MaterialCommunityIcons
                   name="logout-variant"
                   size={20}
-                  color="#6f4e37"
+                  color={primaryColor}
                 />
               </TouchableOpacity>
             </View>
 
-            <View style={styles.shopSearchBar}>
+            <View style={[styles.shopSearchBar, isDarkMode && styles.shopSearchBarDark]}>
               <MaterialCommunityIcons
                 name="magnify"
                 size={22}
-                color="#8a7d74"
+                color={mutedColor}
               />
               <TextInput
-                style={styles.shopSearchInput}
+                style={[styles.shopSearchInput, isDarkMode && styles.shopSearchInputDark]}
                 placeholder="Search item..."
-                placeholderTextColor="#9b918a"
+                placeholderTextColor={isDarkMode ? "#8F8E96" : "#9b918a"}
                 value={search}
                 onChangeText={setSearch}
               />
             </View>
 
-            {!hasSearch && <BannerCarousel data={banners} />}
+            {!hasSearch && (
+              <View style={styles.shopBannerFullWidth}>
+                <BannerCarousel data={banners} />
+              </View>
+            )}
 
             {!hasSearch && (
               <>
                 <View style={styles.shopSectionRow}>
-                  <Text style={styles.shopSectionTitle}>Categoria</Text>
+                  <Text style={[styles.shopSectionTitle, isDarkMode && styles.shopSectionTitleDark]}>
+                    Categoria
+                  </Text>
                 </View>
 
                 <ScrollView
@@ -319,11 +333,18 @@ export function HomeScreen({ navigation }: any) {
                         style={[
                           styles.shopCategoryCard,
                           isActive && styles.shopCategoryCardActive,
+                          isDarkMode && styles.shopCategoryCardDark,
+                          isActive && isDarkMode && styles.shopCategoryCardActiveDark,
                         ]}
                         onPress={() => setSelectedCategory(item.id)}
                         activeOpacity={0.85}
                       >
-                        <View style={styles.shopCategoryIconWrap}>
+                        <View
+                          style={[
+                            styles.shopCategoryIconWrap,
+                            isDarkMode && styles.shopCategoryIconWrapDark,
+                          ]}
+                        >
                           <Image
                             source={categoryImage}
                             style={styles.shopCategoryIcon}
@@ -334,6 +355,8 @@ export function HomeScreen({ navigation }: any) {
                           style={[
                             styles.shopCategoryTitle,
                             isActive && styles.shopCategoryTitleActive,
+                            isDarkMode && styles.shopCategoryTitleDark,
+                            isActive && isDarkMode && styles.shopCategoryTitleActiveDark,
                           ]}
                         >
                           {item.name}
@@ -346,30 +369,36 @@ export function HomeScreen({ navigation }: any) {
             )}
 
             <View style={styles.shopSectionRow}>
-              <Text style={styles.shopSectionTitle}>
+              <Text style={[styles.shopSectionTitle, isDarkMode && styles.shopSectionTitleDark]}>
                 {hasSearch
                   ? `Resultados de busqueda (${filteredProducts.length})`
                   : "Tendencia"}
               </Text>
               {!hasSearch && (
                 <TouchableOpacity activeOpacity={0.8}>
-                  <Text style={styles.shopSeeMore}>Ver mas</Text>
+                  <Text style={[styles.shopSeeMore, isDarkMode && styles.shopSeeMoreDark]}>
+                    Ver mas
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
 
             {hasSearch && (
-              <Text style={styles.shopSearchHint}>
+              <Text style={[styles.shopSearchHint, isDarkMode && styles.shopSearchHintDark]}>
                 {`Mostrando productos relacionados con "${search.trim()}".`}
               </Text>
             )}
 
             {categoriesLoading && !hasSearch && (
-              <Text style={styles.shopStatusText}>Cargando categorias...</Text>
+              <Text style={[styles.shopStatusText, isDarkMode && styles.shopStatusTextDark]}>
+                Cargando categorias...
+              </Text>
             )}
 
             {!!cartMessage && (
-              <Text style={styles.shopStatusText}>{cartMessage}</Text>
+              <Text style={[styles.shopStatusText, isDarkMode && styles.shopStatusTextDark]}>
+                {cartMessage}
+              </Text>
             )}
           </View>
         }
@@ -377,7 +406,7 @@ export function HomeScreen({ navigation }: any) {
           const liked = likedProductIds.includes(item.productId);
           return (
             <TouchableOpacity
-              style={styles.shopProductCard}
+              style={[styles.shopProductCard, isDarkMode && styles.shopProductCardDark]}
               activeOpacity={0.88}
               onPress={() =>
                 navigation.navigate("ProductDetail", {
@@ -385,7 +414,9 @@ export function HomeScreen({ navigation }: any) {
                 })
               }
             >
-              <Text style={styles.shopDiscountTag}>{item.discountLabel}</Text>
+              <Text style={[styles.shopDiscountTag, isDarkMode && styles.shopDiscountTagDark]}>
+                {item.discountLabel}
+              </Text>
 
               <View style={styles.shopProductImageWrap}>
                 <Image
@@ -395,30 +426,33 @@ export function HomeScreen({ navigation }: any) {
                 />
               </View>
 
-              <Text style={styles.shopProductName} numberOfLines={2}>
+              <Text
+                style={[styles.shopProductName, isDarkMode && styles.shopProductNameDark]}
+                numberOfLines={2}
+              >
                 {item.name}
               </Text>
 
               <View style={styles.shopProductFooter}>
-                <Text style={styles.shopProductPrice}>{`S/${item.price.toFixed(
+                <Text style={[styles.shopProductPrice, isDarkMode && styles.shopProductPriceDark]}>{`S/${item.price.toFixed(
                   2
                 )}`}</Text>
 
                 <View style={styles.shopProductActions}>
                   <TouchableOpacity
-                    style={styles.shopIconButton}
+                    style={[styles.shopIconButton, isDarkMode && styles.shopIconButtonDark]}
                     accessibilityLabel="Agregar a favoritos"
                     onPress={() => toggleLike(item.productId)}
                   >
                     <MaterialCommunityIcons
                       name={liked ? "heart" : "heart-outline"}
                       size={14}
-                      color={liked ? "#d74a4a" : "#8a7d74"}
+                      color={liked ? "#d74a4a" : mutedColor}
                     />
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles.shopIconButton}
+                    style={[styles.shopIconButton, isDarkMode && styles.shopIconButtonDark]}
                     accessibilityLabel="Agregar al carrito"
                     onPress={() => addToCart(item.productId)}
                     disabled={cartLoading}
@@ -426,7 +460,7 @@ export function HomeScreen({ navigation }: any) {
                     <MaterialCommunityIcons
                       name="cart-plus"
                       size={14}
-                      color="#8d7a6b"
+                      color={isDarkMode ? "#D7B48A" : "#8d7a6b"}
                     />
                   </TouchableOpacity>
                 </View>
@@ -439,14 +473,16 @@ export function HomeScreen({ navigation }: any) {
             {productsLoading ? (
               <>
                 <ActivityIndicator color="#6f4e37" />
-                <Text style={styles.shopStatusText}>Cargando productos...</Text>
+                <Text style={[styles.shopStatusText, isDarkMode && styles.shopStatusTextDark]}>
+                  Cargando productos...
+                </Text>
               </>
             ) : productsError ? (
               <Text style={[styles.shopStatusText, styles.shopStatusError]}>
                 {productsError}
               </Text>
             ) : (
-              <Text style={styles.shopEmptyText}>
+              <Text style={[styles.shopEmptyText, isDarkMode && styles.shopEmptyTextDark]}>
                 No encontramos chocolates con esa busqueda.
               </Text>
             )}
@@ -456,7 +492,7 @@ export function HomeScreen({ navigation }: any) {
 
       <View style={styles.shopBottomNavWrapper}>
         <TouchableOpacity
-          style={styles.shopOrderButton}
+          style={[styles.shopOrderButton, isDarkMode && styles.shopOrderButtonDark]}
           activeOpacity={0.85}
           onPress={() => navigation.navigate("Cart")}
           accessibilityLabel="Ir a mi pedido"
@@ -465,7 +501,7 @@ export function HomeScreen({ navigation }: any) {
             <MaterialCommunityIcons
               name="cart"
               size={20}
-              color="#1da1dc"
+              color={isDarkMode ? "#D7B48A" : "#1da1dc"}
               style={styles.shopOrderButtonIcon}
             />
             {cartCount > 0 && (
@@ -476,13 +512,26 @@ export function HomeScreen({ navigation }: any) {
               </View>
             )}
           </View>
-          <Text style={styles.shopOrderButtonText}>Mi Pedido</Text>
+          <Text style={[styles.shopOrderButtonText, isDarkMode && styles.shopOrderButtonTextDark]}>
+            Mi Pedido
+          </Text>
         </TouchableOpacity>
 
-        <View style={styles.shopBottomNav}>
+        <View style={[styles.shopBottomNav, isDarkMode && styles.shopBottomNavDark]}>
           <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
-            <MaterialCommunityIcons name="home" size={20} color="#1da1dc" />
-            <Text style={[styles.shopBottomLabel, styles.shopBottomLabelActive]}>
+            <MaterialCommunityIcons
+              name="home"
+              size={20}
+              color={isDarkMode ? "#D7B48A" : "#1da1dc"}
+            />
+            <Text
+              style={[
+                styles.shopBottomLabel,
+                styles.shopBottomLabelActive,
+                isDarkMode && styles.shopBottomLabelDark,
+                isDarkMode && styles.shopBottomLabelActiveDark,
+              ]}
+            >
               Inicio
             </Text>
           </TouchableOpacity>
@@ -495,9 +544,11 @@ export function HomeScreen({ navigation }: any) {
             <MaterialCommunityIcons
               name="cube-outline"
               size={19}
-              color="#8f8f8f"
+              color={inactiveBottomIcon}
             />
-            <Text style={styles.shopBottomLabel}>Envios</Text>
+            <Text style={[styles.shopBottomLabel, isDarkMode && styles.shopBottomLabelDark]}>
+              Envios
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -508,9 +559,11 @@ export function HomeScreen({ navigation }: any) {
             <MaterialCommunityIcons
               name="clipboard-text-outline"
               size={19}
-              color="#8f8f8f"
+              color={inactiveBottomIcon}
             />
-            <Text style={styles.shopBottomLabel}>Pedidos</Text>
+            <Text style={[styles.shopBottomLabel, isDarkMode && styles.shopBottomLabelDark]}>
+              Pedidos
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -521,9 +574,11 @@ export function HomeScreen({ navigation }: any) {
             <MaterialCommunityIcons
               name="account-outline"
               size={19}
-              color="#8f8f8f"
+              color={inactiveBottomIcon}
             />
-            <Text style={styles.shopBottomLabel}>Perfil</Text>
+            <Text style={[styles.shopBottomLabel, isDarkMode && styles.shopBottomLabelDark]}>
+              Perfil
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
