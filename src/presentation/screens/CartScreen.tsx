@@ -480,12 +480,18 @@ export function CartScreen({ navigation }: any) {
           <Text style={[styles.bottomLabel, styles.bottomLabelActive]}>Inicio</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.bottomItem}>
+        <TouchableOpacity
+          style={styles.bottomItem}
+          onPress={() => navigation.navigate("Shipments")}
+        >
           <MaterialCommunityIcons name="cube-outline" size={28} color="#919191" />
           <Text style={styles.bottomLabel}>Envios</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.bottomItem}>
+        <TouchableOpacity
+          style={styles.bottomItem}
+          onPress={() => navigation.navigate("Orders")}
+        >
           <MaterialCommunityIcons name="shopping-outline" size={28} color="#919191" />
           <Text style={styles.bottomLabel}>Pedidos</Text>
         </TouchableOpacity>

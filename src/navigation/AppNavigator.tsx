@@ -7,6 +7,9 @@ import { NewAddressScreen } from "../presentation/screens/NewAddressScreen";
 import { PaymentMethodScreen } from "../presentation/screens/PaymentMethodScreen";
 import { ProfileScreen } from "../presentation/screens/ProfileScreen";
 import { ProductDetailScreen } from "../presentation/screens/ProductDetailScreen";
+import { OrdersScreen } from "../presentation/screens/OrdersScreen";
+import { ShipmentsScreen } from "../presentation/screens/ShipmentsScreen";
+import { TrackingScreen } from "../presentation/screens/TrackingScreen";
 
 /* 👇 Tipado del stack */
 
@@ -19,6 +22,9 @@ export type RootStackParamList = {
   PaymentMethod: undefined;
   Profile: undefined;
   ProductDetail: { productId: number };
+  Orders: undefined;
+  Shipments: undefined;
+  Tracking: { orderId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -78,6 +84,27 @@ export function AppNavigator({
       <Stack.Screen
         name="ProductDetail"
         component={ProductDetailScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Orders"
+        component={OrdersScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Shipments"
+        component={ShipmentsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Tracking"
+        component={TrackingScreen}
         options={{
           headerShown: false,
         }}

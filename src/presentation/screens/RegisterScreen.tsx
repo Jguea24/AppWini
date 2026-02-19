@@ -14,6 +14,18 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useAuthViewModel } from "../../viewmodel/AuthViewModel";
 import { registerStyles as styles } from "../styles/register.styles";
 
+type RegisterRole = "client" | "driver" | "provider";
+
+const ROLE_OPTIONS: Array<{
+  id: RegisterRole;
+  label: string;
+  description: string;
+}> = [
+  { id: "client", label: "Cliente", description: "Compra normal" },
+  { id: "driver", label: "Repartidor", description: "Solicita rol de reparto" },
+  { id: "provider", label: "Proveedor", description: "Solicita rol de proveedor" },
+];
+
 export function RegisterScreen({ navigation }: any) {
   const { register, loading, error } = useAuthViewModel();
 
@@ -23,13 +35,14 @@ export function RegisterScreen({ navigation }: any) {
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState<RegisterRole>("client");
+  const [roleReason, setRoleReason] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
   const emailRegex = /\S+@\S+\.\S+/;
   const phoneRegex = /^[0-9]{10}$/;
-
   const passwordsMatch = password === confirmPassword;
 
   const handleRegister = async () => {
@@ -50,24 +63,26 @@ export function RegisterScreen({ navigation }: any) {
       return;
     }
 
+    if (!address.trim()) {
+      setLocalError("Direccion requerida");
+      return;
+    }
+
     const success = await register(
       fullName.trim(),
       email.trim(),
       password,
       phone.trim(),
-      address.trim()
+      selectedRole,
+      roleReason.trim()
     );
 
-    if (success) navigation.goBack();
+    if (success) {
+      navigation.goBack();
+    }
   };
 
-  const isValid =
-    fullName &&
-    email &&
-    phone &&
-    address &&
-    password &&
-    confirmPassword;
+  const isValid = fullName && email && phone && address && password && confirmPassword;
 
   return (
     <KeyboardAvoidingView
@@ -155,6 +170,60 @@ export function RegisterScreen({ navigation }: any) {
               onChangeText={setAddress}
             />
           </View>
+
+          <Text style={styles.roleLabel}>Rol de registro</Text>
+          <View style={styles.roleSelector}>
+            {ROLE_OPTIONS.map((option) => {
+              const isActive = selectedRole === option.id;
+              return (
+                <TouchableOpacity
+                  key={option.id}
+                  style={[
+                    styles.roleOptionButton,
+                    isActive && styles.roleOptionButtonActive,
+                  ]}
+                  onPress={() => setSelectedRole(option.id)}
+                  activeOpacity={0.85}
+                >
+                  <Text
+                    style={[
+                      styles.roleOptionTitle,
+                      isActive && styles.roleOptionTitleActive,
+                    ]}
+                  >
+                    {option.label}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.roleOptionDescription,
+                      isActive && styles.roleOptionDescriptionActive,
+                    ]}
+                  >
+                    {option.description}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {selectedRole !== "client" && (
+            <View style={styles.inputWrapper}>
+              <MaterialCommunityIcons
+                name="text-box-edit-outline"
+                size={20}
+                color="#6b7280"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={[styles.inputWithIcon, styles.inputMultiline]}
+                placeholder="Motivo (opcional)"
+                value={roleReason}
+                onChangeText={setRoleReason}
+                multiline
+                textAlignVertical="top"
+              />
+            </View>
+          )}
 
           <View style={styles.inputWrapper}>
             <TextInput

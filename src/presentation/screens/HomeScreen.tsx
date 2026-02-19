@@ -46,7 +46,7 @@ const allCategory: UiCategory = {
   image_url: "",
 };
 
-const fallbackImage = require("../../shared/assets/product.png");
+const fallbackImage = require("../../shared/assets/cultura.png");
 
 const isAllCategoryName = (name: string) => {
   const normalized = name.trim().toLowerCase();
@@ -487,7 +487,11 @@ export function HomeScreen({ navigation }: any) {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.shopBottomItem}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("Shipments")}
+          >
             <MaterialCommunityIcons
               name="cube-outline"
               size={19}
@@ -496,7 +500,11 @@ export function HomeScreen({ navigation }: any) {
             <Text style={styles.shopBottomLabel}>Envios</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shopBottomItem} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.shopBottomItem}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("Orders")}
+          >
             <MaterialCommunityIcons
               name="clipboard-text-outline"
               size={19}

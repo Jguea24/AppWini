@@ -74,6 +74,50 @@ export const registerStyles = StyleSheet.create({
   inputWithoutLeftIcon: {
     paddingLeft: 14,
   },
+  inputMultiline: {
+    minHeight: 84,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  roleLabel: {
+    marginBottom: 8,
+    marginTop: 2,
+    color: "#1f2937",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+  roleSelector: {
+    marginBottom: 14,
+  },
+  roleOptionButton: {
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 8,
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 8,
+  },
+  roleOptionButtonActive: {
+    borderColor: "#2563eb",
+    backgroundColor: "#eef4ff",
+  },
+  roleOptionTitle: {
+    color: "#111827",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+  roleOptionTitleActive: {
+    color: "#1d4ed8",
+  },
+  roleOptionDescription: {
+    marginTop: 2,
+    color: "#6b7280",
+    fontSize: 12,
+  },
+  roleOptionDescriptionActive: {
+    color: "#1e40af",
+  },
   passwordToggle: {
     paddingHorizontal: 12,
     paddingVertical: 8,

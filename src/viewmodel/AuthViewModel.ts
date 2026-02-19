@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { loginService, registerService } from "../services/authService";
+import {
+  loginService,
+  registerService,
+  type RegisterRole,
+} from "../services/authService";
 import {
   saveAuthTokens,
   saveDisplayName,
@@ -24,25 +28,75 @@ export function useAuthViewModel() {
     return detail || fallback;
   };
 
-  // ✅ REGISTER ACTUALIZADO
+  const normalizeRole = (role?: string): RegisterRole | undefined => {
+    if (!role) {
+      return undefined;
+    }
+
+    const normalized = role.trim().toLowerCase();
+    if (normalized === "admin") {
+      return undefined;
+    }
+    if (normalized === "driver" || normalized === "repartidor") {
+      return "driver";
+    }
+    if (normalized === "provider" || normalized === "proveedor") {
+      return "provider";
+    }
+    if (normalized === "client" || normalized === "cliente") {
+      return "client";
+    }
+    return undefined;
+  };
+
   const register = async (
     fullName: string,
     email: string,
     password: string,
     phone: string,
-    address: string
+    role?: string,
+    roleReason?: string
   ) => {
     try {
       setLoading(true);
       setError(null);
 
-      await registerService({
+      if (role?.trim().toLowerCase() === "admin") {
+        setError("El rol admin no esta permitido");
+        return false;
+      }
+
+      const normalizedRole = normalizeRole(role);
+      const payload: {
+        full_name: string;
+        email: string;
+        phone: string;
+        password: string;
+        password2: string;
+        role?: RegisterRole;
+        role_reason?: string;
+      } = {
         full_name: fullName,
         email,
-        password,
         phone,
-        address,
-      });
+        password,
+        password2: password,
+      };
+
+      if (normalizedRole) {
+        payload.role = normalizedRole;
+      }
+
+      if (
+        normalizedRole &&
+        normalizedRole !== "client" &&
+        roleReason &&
+        roleReason.trim().length > 0
+      ) {
+        payload.role_reason = roleReason.trim();
+      }
+
+      await registerService(payload);
 
       await saveUsername(email);
       await saveDisplayName(fullName);
@@ -69,7 +123,7 @@ export function useAuthViewModel() {
         return true;
       }
 
-      setError("Respuesta inválida del servidor");
+      setError("Respuesta invalida del servidor");
       return false;
     } catch (err: any) {
       setError(String(extractError(err, "Credenciales incorrectas")));

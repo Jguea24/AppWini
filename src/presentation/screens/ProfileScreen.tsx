@@ -17,7 +17,6 @@ import {
   changePassword,
   createRoleRequest,
   getMe,
-  getRoleRequests,
   MeResponse,
   updateMe,
 } from "../../services/profileApi";
@@ -56,6 +55,41 @@ const createInitialProfileForm = (profile?: MeResponse | null): ProfileForm => (
   address: String(profile?.address ?? ""),
 });
 
+const normalizeRoleCode = (value: unknown): string => {
+  if (typeof value !== "string") {
+    return "client";
+  }
+
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) {
+    return "client";
+  }
+
+  if (normalized === "user") {
+    return "client";
+  }
+
+  return normalized;
+};
+
+const formatRoleLabel = (roleCode: string): string => {
+  const normalized = normalizeRoleCode(roleCode);
+  if (normalized === "admin") {
+    return "Administrador";
+  }
+  if (normalized === "provider") {
+    return "Proveedor";
+  }
+  if (normalized === "driver") {
+    return "Repartidor";
+  }
+  if (normalized === "client") {
+    return "Cliente";
+  }
+
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+};
+
 function MenuRow({ icon, iconBg, title, subtitle, onPress, right }: MenuRowProps) {
   return (
     <TouchableOpacity
@@ -73,7 +107,7 @@ function MenuRow({ icon, iconBg, title, subtitle, onPress, right }: MenuRowProps
         {!!subtitle && <Text style={styles.menuSubtitle}>{subtitle}</Text>}
       </View>
 
-      {right ?? <MaterialCommunityIcons name="chevron-right" size={26} color="#c8c8ce" />}
+      {right ?? (onPress ? <MaterialCommunityIcons name="chevron-right" size={26} color="#c8c8ce" /> : null)}
     </TouchableOpacity>
   );
 }
@@ -82,7 +116,6 @@ export function ProfileScreen({ navigation }: any) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<MeResponse | null>(null);
-  const [roleRequestsCount, setRoleRequestsCount] = useState(0);
 
   const [darkMode, setDarkMode] = useState(false);
 
@@ -121,27 +154,70 @@ export function ProfileScreen({ navigation }: any) {
     return "Sin correo registrado";
   }, [profile?.email]);
 
+  const currentRoleCode = useMemo(
+    () => normalizeRoleCode(profile?.role),
+    [profile?.role]
+  );
+
+  const currentRoleLabel = useMemo(
+    () => formatRoleLabel(currentRoleCode),
+    [currentRoleCode]
+  );
+
+  const rolesList = useMemo(() => {
+    const items = Array.isArray(profile?.roles) ? profile.roles : [];
+    const normalized = items
+      .map((role) => normalizeRoleCode(role))
+      .filter((role) => role.trim().length > 0);
+
+    if (!normalized.length) {
+      return [currentRoleCode];
+    }
+
+    return [...new Set(normalized)];
+  }, [currentRoleCode, profile?.roles]);
+
+  const rolesLabel = useMemo(() => {
+    return rolesList.map((role) => formatRoleLabel(role)).join(", ");
+  }, [rolesList]);
+
+  const pendingRoleRequest = useMemo(() => {
+    const rawPending = profile?.pending_role_request;
+    if (!rawPending || typeof rawPending !== "object") {
+      return null;
+    }
+
+    return rawPending as Record<string, unknown>;
+  }, [profile?.pending_role_request]);
+
+  const pendingRoleSubtitle = useMemo(() => {
+    if (!pendingRoleRequest) {
+      return "Solicita ser proveedor o repartidor";
+    }
+
+    const requestedRole = formatRoleLabel(
+      normalizeRoleCode(pendingRoleRequest.requested_role)
+    );
+    const statusRaw =
+      typeof pendingRoleRequest.status === "string"
+        ? pendingRoleRequest.status.trim().toLowerCase()
+        : "pending";
+    const statusLabel =
+      statusRaw === "approved"
+        ? "aprobada"
+        : statusRaw === "rejected"
+        ? "rechazada"
+        : "pendiente";
+    return `Solicitud ${statusLabel}: ${requestedRole}`;
+  }, [pendingRoleRequest]);
+
   const loadProfileData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const [meResult, rolesResult] = await Promise.allSettled([
-        getMe(),
-        getRoleRequests(),
-      ]);
-
-      if (meResult.status === "fulfilled") {
-        setProfile(meResult.value);
-      } else {
-        throw meResult.reason;
-      }
-
-      if (rolesResult.status === "fulfilled") {
-        setRoleRequestsCount(rolesResult.value.length);
-      } else {
-        setRoleRequestsCount(0);
-      }
+      const me = await getMe();
+      setProfile(me);
     } catch (err) {
       if (err instanceof Error && err.message.trim().length > 0) {
         setError(err.message);
@@ -238,6 +314,11 @@ export function ProfileScreen({ navigation }: any) {
       return;
     }
 
+    if (pendingRoleRequest) {
+      Alert.alert("Solicitud", "Ya tienes una solicitud de rol en proceso");
+      return;
+    }
+
     if (!roleForm.reason.trim()) {
       Alert.alert("Solicitud", "Ingresa el motivo de la solicitud");
       return;
@@ -250,8 +331,8 @@ export function ProfileScreen({ navigation }: any) {
         reason: roleForm.reason.trim(),
       });
 
-      const updatedRequests = await getRoleRequests();
-      setRoleRequestsCount(updatedRequests.length);
+      const me = await getMe();
+      setProfile(me);
       setRoleModalVisible(false);
       setRoleForm({ requested_role: "provider", reason: "" });
       Alert.alert("Solicitud", "Solicitud enviada correctamente");
@@ -288,8 +369,17 @@ export function ProfileScreen({ navigation }: any) {
             <View style={styles.userTextWrap}>
               <Text style={styles.userName}>{displayName}</Text>
               <Text style={styles.userEmail}>{displayEmail}</Text>
+              <Text style={styles.userRoleText}>{`Rol: ${currentRoleLabel}`}</Text>
+              <Text style={styles.userRolesText}>{`Roles: ${rolesLabel}`}</Text>
             </View>
           </View>
+
+          {!!pendingRoleRequest && (
+            <View style={styles.pendingRoleCard}>
+              <MaterialCommunityIcons name="clock-outline" size={18} color="#7A5230" />
+              <Text style={styles.pendingRoleText}>{pendingRoleSubtitle}</Text>
+            </View>
+          )}
 
           {!!error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -359,12 +449,14 @@ export function ProfileScreen({ navigation }: any) {
               icon="swap-horizontal"
               iconBg="#AF52DE"
               title="Solicitar cambio de rol"
-              subtitle={
-                roleRequestsCount > 0
-                  ? `${roleRequestsCount} solicitud(es) registrada(s)`
-                  : "Solicita ser proveedor o repartidor"
-              }
-              onPress={() => setRoleModalVisible(true)}
+              subtitle={pendingRoleSubtitle}
+              onPress={() => {
+                if (pendingRoleRequest) {
+                  Alert.alert("Solicitud", "Ya tienes una solicitud de rol en proceso");
+                  return;
+                }
+                setRoleModalVisible(true);
+              }}
             />
           </View>
 
@@ -411,12 +503,18 @@ export function ProfileScreen({ navigation }: any) {
           <Text style={styles.bottomLabel}>Inicio</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.bottomItem}>
+        <TouchableOpacity
+          style={styles.bottomItem}
+          onPress={() => navigation.navigate("Shipments")}
+        >
           <MaterialCommunityIcons name="cube-outline" size={28} color="#919191" />
           <Text style={styles.bottomLabel}>Envios</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.bottomItem}>
+        <TouchableOpacity
+          style={styles.bottomItem}
+          onPress={() => navigation.navigate("Orders")}
+        >
           <MaterialCommunityIcons name="shopping-outline" size={28} color="#919191" />
           <Text style={styles.bottomLabel}>Pedidos</Text>
         </TouchableOpacity>
@@ -703,6 +801,36 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 16 / 1.1,
     color: "#8a8a91",
+  },
+  userRoleText: {
+    marginTop: 6,
+    fontSize: 13,
+    color: "#6F4E37",
+    fontWeight: "700",
+  },
+  userRolesText: {
+    marginTop: 2,
+    fontSize: 12,
+    color: "#8a8a90",
+  },
+  pendingRoleCard: {
+    marginTop: -8,
+    marginBottom: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E8D9CB",
+    backgroundColor: "#F9F2EA",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  pendingRoleText: {
+    marginLeft: 8,
+    color: "#7A5230",
+    fontSize: 13,
+    fontWeight: "600",
+    flex: 1,
   },
   errorText: {
     marginBottom: 12,

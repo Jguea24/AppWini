@@ -1,4 +1,5 @@
-import { API_BASE_URL } from "./api";
+import { AxiosError } from "axios";
+import api, { API_BASE_URL } from "./api";
 import { getToken } from "../shared/storage/authStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -156,29 +157,34 @@ export const geoAutocompleteWithAccessTokenService = async (
     return [];
   }
 
-  const response = await fetch(
-    `${API_BASE_URL}/geo/autocomplete/?q=${encodeURIComponent(
-      normalizedText
-    )}&country=${encodeURIComponent(country)}&limit=${encodeURIComponent(String(limit))}`,
-    {
+  try {
+    const { data } = await api.get("/geo/autocomplete/", {
+      params: { q: normalizedText, country, limit },
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
+    });
+
+    const results = Array.isArray((data as Record<string, unknown>)?.results)
+      ? (((data as Record<string, unknown>).results ?? []) as Record<string, unknown>[])
+      : Array.isArray(data)
+      ? (data as Record<string, unknown>[])
+      : [];
+
+    return results.map((item, index) => parseGeoItem(item, index));
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        extractErrorMessage(error.response?.data, "No se pudo buscar direccion")
+      );
     }
-  );
 
-  const data = await readJsonSafely(response);
-  if (!response.ok) {
-    throw new Error(extractErrorMessage(data, "No se pudo buscar direccion"));
+    if (error instanceof Error && error.message.trim().length > 0) {
+      throw new Error(error.message);
+    }
+
+    throw new Error("No se pudo buscar direccion");
   }
-
-  const results = Array.isArray(data?.results)
-    ? (data.results as Record<string, unknown>[])
-    : Array.isArray(data)
-    ? (data as Record<string, unknown>[])
-    : [];
-
-  return results.map((item, index) => parseGeoItem(item, index));
 };
 
 export const geoAutocompleteService = async (

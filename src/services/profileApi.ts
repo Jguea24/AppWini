@@ -9,6 +9,16 @@ export type MeResponse = {
   phone?: string;
   address?: string;
   avatar?: string | null;
+  role?: string;
+  roles?: string[];
+  pending_role_request?: {
+    id?: number;
+    requested_role?: string;
+    reason?: string;
+    status?: string;
+    created_at?: string;
+    [key: string]: unknown;
+  } | null;
   [key: string]: unknown;
 };
 

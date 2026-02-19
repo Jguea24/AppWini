@@ -1,12 +1,18 @@
 import { api } from "./api";
 
-export const registerService = async (payload: {
+export type RegisterRole = "client" | "driver" | "provider";
+
+export type RegisterPayload = {
   full_name: string;
   email: string;
-  password: string;
   phone: string;
-  address: string;
-}) => {
+  password: string;
+  password2: string;
+  role?: RegisterRole;
+  role_reason?: string;
+};
+
+export const registerService = async (payload: RegisterPayload) => {
   const response = await api.post("register/", payload);
   return response.data;
 };
