@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -10,10 +10,10 @@ import {
   View,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Product } from "../../model/Product";
-import { API_BASE_URL } from "../../services/api";
-import { getProductDetailService } from "../../services/productService";
-import { useCartViewModel } from "../../viewmodel/CartViewModel";
+import { Product } from "../../domain/entities/Product";
+import { API_BASE_URL } from "../../data/services/api";
+import { getProductDetailService } from "../../data/services/productService";
+import { useCartViewModel } from "../viewmodel/CartViewModel";
 
 type ProductDetailRoute = {
   params?: {
@@ -535,3 +535,5 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 });
+
+

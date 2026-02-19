@@ -1,4 +1,4 @@
-import { api } from "./api";
+﻿import { api } from "./api";
 
 export type RegisterRole = "client" | "driver" | "provider";
 
@@ -32,3 +32,4 @@ export const refreshTokenService = async (refresh: string) => {
   const response = await api.post("token/refresh/", { refresh });
   return response.data;
 };
+

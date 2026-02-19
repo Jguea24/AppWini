@@ -1,4 +1,4 @@
-import api from "./api";
+﻿import api from "./api";
 
 export type Banner = {
   id: number | string;
@@ -20,3 +20,4 @@ export const getBanners = async (): Promise<Banner[]> => {
 
   return [];
 };
+

@@ -1,6 +1,6 @@
-import api from "./api";
+﻿import api from "./api";
 import { API_BASE_URL } from "./api";
-import { Product } from "../model/Product";
+import { Product } from "../../domain/entities/Product";
 
 type ProductApiResponse = Product[] | { results: Product[] };
 type ProductDetailApiResponse = Product | { data: Product } | { result: Product };
@@ -91,3 +91,5 @@ export const getProductDetailService = async (
 
   throw new Error("Respuesta invalida del producto");
 };
+
+

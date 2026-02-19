@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+﻿import { AxiosError } from "axios";
 import api from "./api";
 
 export type TrackingStatus =
@@ -123,7 +123,7 @@ export const getOrderTrackingService = async (
 
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo cargar tracking");
+    return handleAxiosError(error, "No se pudo cargar tracking");
   }
 };
 
@@ -141,7 +141,7 @@ export const postDriverLocationService = async (
 
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo enviar ubicacion");
+    return handleAxiosError(error, "No se pudo enviar ubicacion");
   }
 };
 
@@ -159,7 +159,7 @@ export const assignDriverService = async (
 
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo asignar repartidor");
+    return handleAxiosError(error, "No se pudo asignar repartidor");
   }
 };
 
@@ -176,7 +176,7 @@ export const unassignDriverService = async (
 
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo desasignar repartidor");
+    return handleAxiosError(error, "No se pudo desasignar repartidor");
   }
 };
 
@@ -197,6 +197,7 @@ export const autoAssignDriverService = async (
 
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo asignar repartidor automaticamente");
+    return handleAxiosError(error, "No se pudo asignar repartidor automaticamente");
   }
 };
+

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+﻿import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { getOrdersService, type OrderRecord } from "../../services/orderService";
+import { getOrdersService, type OrderRecord } from "../../data/services/orderService";
 import { getToken } from "../../shared/storage/authStorage";
 
 type ShipmentOrder = {
@@ -413,3 +413,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+

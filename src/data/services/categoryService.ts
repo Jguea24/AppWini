@@ -1,5 +1,5 @@
-import api from "./api";
-import { Category } from "../model/category";
+﻿import api from "./api";
+import { Category } from "../../domain/entities/category";
 
 type CategoriesApiResponse = Category[] | { results: Category[] };
 
@@ -45,3 +45,5 @@ export const clearCategoriesCache = () => {
   categoriesCache = null;
   categoriesPromise = null;
 };
+
+

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+﻿import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,7 +15,7 @@ import {
   getOrderDetailService,
   getOrdersService,
   type OrderRecord,
-} from "../../services/orderService";
+} from "../../data/services/orderService";
 import { getToken } from "../../shared/storage/authStorage";
 
 type OrderSummary = {
@@ -601,3 +601,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
+
+

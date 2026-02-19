@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+﻿import { AxiosError } from "axios";
 import api from "./api";
 
 export type GeoAutocompletePayload = {
@@ -94,7 +94,7 @@ export const validateAddressService = async (
     const { data } = await api.post<GeoResponse>("/geo/validate-address/", payload);
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo validar direccion");
+    return handleAxiosError(error, "No se pudo validar direccion");
   }
 };
 
@@ -109,7 +109,7 @@ export const geoAutocompleteService = async (
     });
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo buscar direccion");
+    return handleAxiosError(error, "No se pudo buscar direccion");
   }
 };
 
@@ -122,7 +122,7 @@ export const geoGeocodeService = async (
     });
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo geocodificar direccion");
+    return handleAxiosError(error, "No se pudo geocodificar direccion");
   }
 };
 
@@ -133,6 +133,7 @@ export const estimateRouteService = async (
     const { data } = await api.post<GeoResponse>("/geo/routes/estimate/", payload);
     return data ?? {};
   } catch (error) {
-    handleAxiosError(error, "No se pudo calcular ruta");
+    return handleAxiosError(error, "No se pudo calcular ruta");
   }
 };
+

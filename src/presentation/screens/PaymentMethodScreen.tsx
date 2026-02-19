@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+﻿import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -11,9 +11,9 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { clearCartService, getCartService } from "../../services/cartService";
-import { listAddressesService, type AddressItem } from "../../services/addressService";
-import { createOrderService } from "../../services/orderService";
+import { clearCartService, getCartService } from "../../data/services/cartService";
+import { listAddressesService, type AddressItem } from "../../data/services/addressService";
+import { createOrderService } from "../../data/services/orderService";
 import { getToken } from "../../shared/storage/authStorage";
 
 type CartItem = {
@@ -916,3 +916,5 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 });
+
+

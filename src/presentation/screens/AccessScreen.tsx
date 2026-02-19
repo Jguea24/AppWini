@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import { useOnboardingViewModel } from "../../viewmodel/OnboardingViewModel";
+﻿import { View, Text, TouchableOpacity, Image } from "react-native";
+import { useOnboardingViewModel } from "../viewmodel/OnboardingViewModel";
 import { homeStyles as styles } from "../styles/home.styles";
 
 export function AccessScreen({ navigation }: any) {
@@ -24,21 +24,21 @@ export function AccessScreen({ navigation }: any) {
       </Text>
 
       <Text style={styles.accessSubtitle}>
-        Descubre el chocolate artesanal amazónico, conoce su origen y realiza tus pedidos de forma fácil y segura
+        Descubre el chocolate artesanal amazÃ³nico, conoce su origen y realiza tus pedidos de forma fÃ¡cil y segura
       </Text>
 
-      {/* BOTÓN INICIAR SESIÓN */}
+      {/* BOTÃ“N INICIAR SESIÃ“N */}
       <TouchableOpacity
         style={styles.accessPrimaryButton}
         onPress={goToAuth}
         activeOpacity={0.85}
       >
         <Text style={styles.accessPrimaryText}>
-          Iniciar sesión
+          Iniciar sesiÃ³n
         </Text>
       </TouchableOpacity>
 
-      {/* BOTÓN CREAR CUENTA */}
+      {/* BOTÃ“N CREAR CUENTA */}
       <TouchableOpacity
         style={styles.accessSecondaryButton}
         onPress={goToAuth}
@@ -51,8 +51,10 @@ export function AccessScreen({ navigation }: any) {
 
       {/* FOOTER */}
       <Text style={styles.accessFooter}>
-        Chocolate artesanal • Trazabilidad • Cacao amazónico • Pedidos digitales
+        Chocolate artesanal â€¢ Trazabilidad â€¢ Cacao amazÃ³nico â€¢ Pedidos digitales
       </Text>
     </View>
   );
 }
+
+

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -13,7 +13,7 @@ import {
   getOrderTrackingService,
   type OrderTrackingResponse,
   type TrackingPoint,
-} from "../../services/trackingService";
+} from "../../data/services/trackingService";
 
 const toNullableNumber = (value: unknown): number | null => {
   if (value === null || value === undefined) {
@@ -153,6 +153,7 @@ export function TrackingScreen({ navigation, route }: any) {
     normalizedStatus.includes("pending") ||
     normalizedStatus.includes("assign");
   const shouldShowMap = Boolean(currentLocation) && hasDriver && !isPendingAssignment;
+  const mapLocation = currentLocation ?? { latitude: 0, longitude: 0 };
 
   const autoAssignDriver = useCallback(async () => {
     if (!Number.isFinite(orderId)) {
@@ -259,7 +260,7 @@ export function TrackingScreen({ navigation, route }: any) {
           <MapView
             style={styles.map}
             initialRegion={{
-              ...currentLocation,
+              ...mapLocation,
               latitudeDelta: 0.02,
               longitudeDelta: 0.02,
             }}
@@ -272,7 +273,7 @@ export function TrackingScreen({ navigation, route }: any) {
               />
             )}
 
-            <Marker coordinate={currentLocation} title="Repartidor">
+            <Marker coordinate={mapLocation} title="Repartidor">
               <MaterialCommunityIcons name="bike-fast" size={26} color="#1DA1DC" />
             </Marker>
           </MapView>
@@ -380,3 +381,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
+
+

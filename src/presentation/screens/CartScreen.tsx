@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+﻿import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -17,8 +17,8 @@ import {
   getCartService,
   removeCartItemService,
   updateCartItemService,
-} from "../../services/cartService";
-import { API_BASE_URL } from "../../services/api";
+} from "../../data/services/cartService";
+import { API_BASE_URL } from "../../data/services/api";
 import { getToken } from "../../shared/storage/authStorage";
 
 type CartItem = {
@@ -756,4 +756,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+
 

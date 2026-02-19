@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   TextInput,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useAuthViewModel } from "../../viewmodel/AuthViewModel";
+import { useAuthViewModel } from "../viewmodel/AuthViewModel";
 import { registerStyles as styles } from "../styles/register.styles";
 
 type RegisterRole = "client" | "driver" | "provider";
@@ -293,3 +293,5 @@ export function RegisterScreen({ navigation }: any) {
     </KeyboardAvoidingView>
   );
 }
+
+

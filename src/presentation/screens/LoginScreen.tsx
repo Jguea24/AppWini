@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   TextInput,
@@ -9,7 +9,7 @@ import {
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useAuthViewModel } from "../../viewmodel/AuthViewModel";
+import { useAuthViewModel } from "../viewmodel/AuthViewModel";
 import { getUsername } from "../../shared/storage/authStorage";
 import { loginStyles as styles } from "../styles/login.styles";
 
@@ -123,3 +123,5 @@ export function LoginScreen({ navigation }: any) {
     </View>
   );
 }
+
+

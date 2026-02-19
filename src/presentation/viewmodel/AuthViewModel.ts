@@ -1,14 +1,14 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   loginService,
   registerService,
   type RegisterRole,
-} from "../services/authService";
+} from "../../data/services/authService";
 import {
   saveAuthTokens,
   saveDisplayName,
   saveUsername,
-} from "../shared/storage/authStorage";
+} from "../../shared/storage/authStorage";
 
 export function useAuthViewModel() {
   const [loading, setLoading] = useState(false);
@@ -135,3 +135,5 @@ export function useAuthViewModel() {
 
   return { login, register, loading, error };
 }
+
+

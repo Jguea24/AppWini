@@ -1,16 +1,16 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+﻿import { View, Text, TouchableOpacity, Image } from "react-native";
 import { homeStyles as styles } from "../styles/home.styles";
 
 export function BenefitsScreen({ navigation }: any) {
   return (
     <View style={styles.benefitsContainer}>
-      {/* TÍTULO */}
+      {/* TÃTULO */}
       <Text style={styles.benefitsTitle}>
-        ¿Por qué usar Wini App?
+        Â¿Por quÃ© usar Wini App?
       </Text>
 
       <Text style={styles.benefitsSubtitle}>
-        Conoce, valora y compra chocolate artesanal amazónico desde una sola aplicación
+        Conoce, valora y compra chocolate artesanal amazÃ³nico desde una sola aplicaciÃ³n
       </Text>
 
       {/* CARDS DE BENEFICIOS */}
@@ -21,10 +21,10 @@ export function BenefitsScreen({ navigation }: any) {
             style={styles.benefitIcon}
           />
           <Text style={styles.benefitTitle}>
-            Catálogo artesanal
+            CatÃ¡logo artesanal
           </Text>
           <Text style={styles.benefitText}>
-            Explora chocolates artesanales con imágenes, precios y disponibilidad.
+            Explora chocolates artesanales con imÃ¡genes, precios y disponibilidad.
           </Text>
         </View>
 
@@ -63,12 +63,12 @@ export function BenefitsScreen({ navigation }: any) {
             Historia del cacao
           </Text>
           <Text style={styles.benefitText}>
-            Descubre la cultura, el proceso artesanal y el valor del cacao amazónico.
+            Descubre la cultura, el proceso artesanal y el valor del cacao amazÃ³nico.
           </Text>
         </View>
       </View>
 
-      {/* BOTÓN CONTINUAR */}
+      {/* BOTÃ“N CONTINUAR */}
       <TouchableOpacity
         style={styles.benefitsButton}
         onPress={() => navigation.navigate("Permissions")}
@@ -81,3 +81,5 @@ export function BenefitsScreen({ navigation }: any) {
     </View>
   );
 }
+
+

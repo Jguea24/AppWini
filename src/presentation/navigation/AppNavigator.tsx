@@ -1,17 +1,17 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+﻿import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { OnboardingNavigator } from "./OnboardingNavigator";
 import { AuthNavigator } from "./AuthNavigator";
-import { HomeScreen } from "../presentation/screens/HomeScreen";
-import { CartScreen } from "../presentation/screens/CartScreen";
-import { NewAddressScreen } from "../presentation/screens/NewAddressScreen";
-import { PaymentMethodScreen } from "../presentation/screens/PaymentMethodScreen";
-import { ProfileScreen } from "../presentation/screens/ProfileScreen";
-import { ProductDetailScreen } from "../presentation/screens/ProductDetailScreen";
-import { OrdersScreen } from "../presentation/screens/OrdersScreen";
-import { ShipmentsScreen } from "../presentation/screens/ShipmentsScreen";
-import { TrackingScreen } from "../presentation/screens/TrackingScreen";
+import { HomeScreen } from "../screens/HomeScreen";
+import { CartScreen } from "../screens/CartScreen";
+import { NewAddressScreen } from "../screens/NewAddressScreen";
+import { PaymentMethodScreen } from "../screens/PaymentMethodScreen";
+import { ProfileScreen } from "../screens/ProfileScreen";
+import { ProductDetailScreen } from "../screens/ProductDetailScreen";
+import { OrdersScreen } from "../screens/OrdersScreen";
+import { ShipmentsScreen } from "../screens/ShipmentsScreen";
+import { TrackingScreen } from "../screens/TrackingScreen";
 
-/* 👇 Tipado del stack */
+/* ðŸ‘‡ Tipado del stack */
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -112,3 +112,4 @@ export function AppNavigator({
     </Stack.Navigator>
   );
 }
+

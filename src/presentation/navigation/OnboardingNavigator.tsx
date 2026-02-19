@@ -1,8 +1,8 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { WelcomeScreen } from "../presentation/screens/WelcomeScreen";
-import { BenefitsScreen } from "../presentation/screens/BenefitsScreen";
-import { PermissionsScreen } from "../presentation/screens/PermissionsScreen";
-import { AccessScreen } from "../presentation/screens/AccessScreen";
+﻿import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { WelcomeScreen } from "../screens/WelcomeScreen";
+import { BenefitsScreen } from "../screens/BenefitsScreen";
+import { PermissionsScreen } from "../screens/PermissionsScreen";
+import { AccessScreen } from "../screens/AccessScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -16,3 +16,4 @@ export function OnboardingNavigator() {
     </Stack.Navigator>
   );
 }
+

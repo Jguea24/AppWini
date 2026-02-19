@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react";
+﻿import { useCallback, useState } from "react";
 import {
   addToCartService,
   getCartCountService,
-} from "../services/cartService";
-import { getToken } from "../shared/storage/authStorage";
+} from "../../data/services/cartService";
+import { getToken } from "../../shared/storage/authStorage";
 
 export function useCartViewModel() {
   const [loading, setLoading] = useState(false);
@@ -61,3 +61,5 @@ export function useCartViewModel() {
 
   return { addToCart, loading, message, cartCount, loadCartCount };
 }
+
+

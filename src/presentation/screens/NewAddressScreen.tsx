@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -15,8 +15,8 @@ import {
   createAddressService,
   geoAutocompleteService,
   type GeoAutocompleteItem,
-} from "../../services/addressService";
-import { geoGeocodeService, validateAddressService } from "../../services/geoService";
+} from "../../data/services/addressService";
+import { geoGeocodeService, validateAddressService } from "../../data/services/geoService";
 
 type FormState = {
   direccionPrincipal: string;
@@ -626,4 +626,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+
 

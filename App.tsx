@@ -5,7 +5,7 @@ import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { enableScreens } from "react-native-screens";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { AppNavigator } from "./src/navigation/AppNavigator";
+import { AppNavigator } from "./src/presentation/navigation/AppNavigator";
 import { getToken } from "./src/shared/storage/authStorage";
 
 // Mejora rendimiento de navegación nativa
@@ -67,3 +67,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+

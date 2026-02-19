@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { getProductsService } from "../services/productService";
-import { getToken } from "../shared/storage/authStorage";
-import { Product } from "../model/Product";
+﻿import { useEffect, useState } from "react";
+import { getProductsService } from "../../data/services/productService";
+import { getToken } from "../../shared/storage/authStorage";
+import { Product } from "../../domain/entities/Product";
 
 export function useProductViewModel() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -28,3 +28,5 @@ export function useProductViewModel() {
 
   return { products, loading, error };
 }
+
+

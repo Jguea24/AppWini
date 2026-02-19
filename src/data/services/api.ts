@@ -1,6 +1,6 @@
-import axios from "axios";
+﻿import axios from "axios";
 import { Platform } from "react-native";
-import { getToken } from "../shared/storage/authStorage";
+import { getToken } from "../../shared/storage/authStorage";
 
 // Ajusta la IP/host segun tu entorno:
 // - Emulador Android: http://10.0.2.2:8000
@@ -30,3 +30,5 @@ api.interceptors.request.use(async (config) => {
 
 export { api, API_BASE_URL };
 export default api;
+
+

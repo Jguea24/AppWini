@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./api";
+﻿import { API_BASE_URL } from "./api";
 
 export type OrderCreatePayload = Record<string, unknown>;
 export type OrderRecord = Record<string, unknown>;
@@ -118,3 +118,4 @@ export const getOrderDetailService = async (
 
   return (data ?? {}) as OrderRecord;
 };
+

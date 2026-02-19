@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+﻿import { View, Text, TouchableOpacity, Image } from "react-native";
 import { homeStyles as styles } from "../styles/home.styles";
 
 export function WelcomeScreen({ navigation }: any) {
@@ -16,10 +16,10 @@ export function WelcomeScreen({ navigation }: any) {
       </Text>
 
       <Text style={styles.welcomeSubtitle}>
-        Descubre el chocolate artesanal amazónico y conoce su origen desde la finca hasta tu mesa
+        Descubre el chocolate artesanal amazÃ³nico y conoce su origen desde la finca hasta tu mesa
       </Text>
 
-      {/* BOTÓN */}
+      {/* BOTÃ“N */}
       <TouchableOpacity
         style={styles.welcomeButton}
         onPress={() => navigation.navigate("Benefits")}
@@ -32,8 +32,10 @@ export function WelcomeScreen({ navigation }: any) {
 
       {/* FOOTER */}
       <Text style={styles.welcomeFooter}>
-        Chocolate artesanal • Trazabilidad • Cacao amazónico • Pedidos digitales
+        Chocolate artesanal â€¢ Trazabilidad â€¢ Cacao amazÃ³nico â€¢ Pedidos digitales
       </Text>
     </View>
   );
 }
+
+

@@ -1,6 +1,6 @@
-import { AxiosError } from "axios";
+﻿import { AxiosError } from "axios";
 import api, { API_BASE_URL } from "./api";
-import { getToken } from "../shared/storage/authStorage";
+import { getToken } from "../../shared/storage/authStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type AddressPayload = {
@@ -81,7 +81,7 @@ const resolveToken = async (token?: string): Promise<string> => {
         return parsed.access;
       }
     } catch {
-      // Ignoramos JSON inválido y caemos en error de sesión.
+      // Ignoramos JSON invÃ¡lido y caemos en error de sesiÃ³n.
     }
   }
 
@@ -298,3 +298,5 @@ export const deleteAddressService = async (
     throw new Error(extractErrorMessage(data, "No se pudo eliminar direccion"));
   }
 };
+
+

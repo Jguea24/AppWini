@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+﻿import { useCallback, useMemo, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -19,7 +19,7 @@ import {
   getMe,
   MeResponse,
   updateMe,
-} from "../../services/profileApi";
+} from "../../data/services/profileApi";
 
 type ProfileForm = {
   full_name: string;
@@ -998,3 +998,5 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
 });
+
+

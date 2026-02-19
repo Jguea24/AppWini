@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   Image,
@@ -13,14 +13,14 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { api } from "../../services/api";
-import { getBanners } from "../../services/bannerService";
-import { getCategories } from "../../services/categoryService";
-import { getProductsByCategory } from "../../services/productService";
+import { api } from "../../data/services/api";
+import { getBanners } from "../../data/services/bannerService";
+import { getCategories } from "../../data/services/categoryService";
+import { getProductsByCategory } from "../../data/services/productService";
 import { removeToken } from "../../shared/storage/authStorage";
-import { useCartViewModel } from "../../viewmodel/CartViewModel";
-import { Category } from "../../model/category";
-import { Product } from "../../model/Product";
+import { useCartViewModel } from "../viewmodel/CartViewModel";
+import { Category } from "../../domain/entities/category";
+import { Product } from "../../domain/entities/Product";
 import BannerCarousel, { BannerItem } from "../components/BannerCarousel";
 import { homeStyles as styles } from "../styles/home.styles";
 
@@ -530,3 +530,5 @@ export function HomeScreen({ navigation }: any) {
     </View>
   );
 }
+
+
