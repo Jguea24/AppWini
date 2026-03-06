@@ -5,6 +5,7 @@
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Alert,
 } from "react-native";
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -43,7 +44,20 @@ export function LoginScreen({ navigation }: any) {
 
   const handleLogin = async () => {
     const success = await login(username.trim(), password);
-    if (success) navigation.replace("Home");
+    if (success) {
+      const goToHome = () => {
+        const parent = navigation.getParent?.();
+        if (parent?.replace) {
+          parent.replace("Home");
+          return;
+        }
+        navigation.navigate("Home");
+      };
+
+      Alert.alert("Inicio de sesion exitoso", "Bienvenido a Wini.", [
+        { text: "Continuar", onPress: goToHome },
+      ]);
+    }
   };
 
   const isValid = username.trim().length > 0 && password.length > 0;

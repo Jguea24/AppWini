@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "sync-env": "node scripts/sync-env.js",
+    "android": "npm run sync-env && react-native run-android",
+    "ios": "npm run sync-env && react-native run-ios",
     "lint": "eslint .",
-    "start": "react-native start",
-    "test": "jest"
+    "start": "npm run sync-env && react-native start",
+    "test": "npm run sync-env && jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.24.0",

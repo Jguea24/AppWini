@@ -1,15 +1,18 @@
 ﻿import axios from "axios";
 import { Platform } from "react-native";
 import { getToken } from "../../shared/storage/authStorage";
+import { ENV_API_BASE_URL } from "../../shared/config/env";
 
 // Ajusta la IP/host segun tu entorno:
 // - Emulador Android: http://10.0.2.2:8000
 // - Dispositivo fisico: http://192.168.1.3:8000
 // - iOS simulador / escritorio local: http://localhost:8000
-const API_BASE_URL =
+const fallbackBaseUrl =
   Platform.OS === "android"
     ? "http://10.0.2.2:8000"
     : "http://localhost:8000";
+
+const API_BASE_URL = (ENV_API_BASE_URL || fallbackBaseUrl).replace(/\/+$/, "");
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -30,5 +33,3 @@ api.interceptors.request.use(async (config) => {
 
 export { api, API_BASE_URL };
 export default api;
-
-

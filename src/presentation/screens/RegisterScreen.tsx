@@ -8,24 +8,13 @@
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAuthViewModel } from "../viewmodel/AuthViewModel";
 import { registerStyles as styles } from "../styles/register.styles";
 import { useThemeMode } from "../../shared/theme/ThemeContext";
-
-type RegisterRole = "client" | "driver" | "provider";
-
-const ROLE_OPTIONS: Array<{
-  id: RegisterRole;
-  label: string;
-  description: string;
-}> = [
-  { id: "client", label: "Cliente", description: "Compra normal" },
-  { id: "driver", label: "Repartidor", description: "Solicita rol de reparto" },
-  { id: "provider", label: "Proveedor", description: "Solicita rol de proveedor" },
-];
 
 export function RegisterScreen({ navigation }: any) {
   const { isDarkMode } = useThemeMode();
@@ -37,8 +26,6 @@ export function RegisterScreen({ navigation }: any) {
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState<RegisterRole>("client");
-  const [roleReason, setRoleReason] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -75,12 +62,13 @@ export function RegisterScreen({ navigation }: any) {
       email.trim(),
       password,
       phone.trim(),
-      selectedRole,
-      roleReason.trim()
+      address.trim()
     );
 
     if (success) {
-      navigation.goBack();
+      Alert.alert("Registro exitoso", "Tu cuenta fue creada correctamente.", [
+        { text: "OK", onPress: () => navigation.navigate("Login") },
+      ]);
     }
   };
 
@@ -181,67 +169,6 @@ export function RegisterScreen({ navigation }: any) {
             />
           </View>
 
-          <Text style={[styles.roleLabel, isDarkMode && { color: "#F2F2F4" }]}>Rol de registro</Text>
-          <View style={styles.roleSelector}>
-            {ROLE_OPTIONS.map((option) => {
-              const isActive = selectedRole === option.id;
-              return (
-                <TouchableOpacity
-                  key={option.id}
-                  style={[
-                    styles.roleOptionButton,
-                    isActive && styles.roleOptionButtonActive,
-                    isDarkMode && { backgroundColor: "#232329", borderColor: "#34343B" },
-                    isActive && isDarkMode && { backgroundColor: "#2A211A", borderColor: "#D7B48A" },
-                  ]}
-                  onPress={() => setSelectedRole(option.id)}
-                  activeOpacity={0.85}
-                >
-                  <Text
-                    style={[
-                      styles.roleOptionTitle,
-                      isActive && styles.roleOptionTitleActive,
-                      isDarkMode && { color: "#F2F2F4" },
-                      isActive && isDarkMode && { color: "#E1C29F" },
-                    ]}
-                  >
-                    {option.label}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.roleOptionDescription,
-                      isActive && styles.roleOptionDescriptionActive,
-                      isDarkMode && { color: "#A0A0A8" },
-                      isActive && isDarkMode && { color: "#D7B48A" },
-                    ]}
-                  >
-                    {option.description}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          {selectedRole !== "client" && (
-            <View style={styles.inputWrapper}>
-              <MaterialCommunityIcons
-                name="text-box-edit-outline"
-                size={20}
-                color={isDarkMode ? "#A0A0A8" : "#6b7280"}
-                style={styles.inputIcon}
-              />
-              <TextInput
-                style={[styles.inputWithIcon, styles.inputMultiline, darkText]}
-                placeholder="Motivo (opcional)"
-                placeholderTextColor={isDarkMode ? "#8F8E96" : "#9ca3af"}
-                value={roleReason}
-                onChangeText={setRoleReason}
-                multiline
-                textAlignVertical="top"
-              />
-            </View>
-          )}
-
           <View style={[styles.inputWrapper, darkFieldStyle]}>
             <TextInput
               style={[styles.inputWithIcon, styles.inputWithoutLeftIcon, darkText]}
@@ -302,7 +229,7 @@ export function RegisterScreen({ navigation }: any) {
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={[styles.backText, isDarkMode && { color: "#D7B48A" }]}>
               Ya tienes cuenta? Inicia sesion
             </Text>
